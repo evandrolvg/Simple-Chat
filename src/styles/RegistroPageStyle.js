@@ -6,7 +6,7 @@ export default StyleSheet.create({
 		backgroundColor: "#88cbf0",
 	},
 	mt: {
-		marginTop: 40,
+		marginTop: 20,
 	},
 	loading: {
 		padding: 20,
@@ -14,12 +14,12 @@ export default StyleSheet.create({
 
 	logo: {
 		// aspectRatio: 1,
-		width: 200,
-		height: 200,
+		width: 100,
+		height: 100,
 		resizeMode: "contain",
 	},
 	logoView: {
-		marginTop: 40,
+		marginTop: 10,
 		justifyContent: "center",
 		alignItems: "center",
 	},

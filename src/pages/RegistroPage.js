@@ -1,29 +1,30 @@
 import React from "react";
-import { Constants, ImagePicker, Permissions } from "expo";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
+// import ImageEditor from "@react-native-community/image-editor";
 import {
-	StyleSheet,
 	Text,
 	TextInput,
+	TouchableOpacity,
+	ScrollView,
 	View,
-	Button,
-	ImageEditor,
+	KeyboardAvoidingView,
+	ActivityIndicator,
+	Image,
+	
 } from "react-native";
+import styles from "../styles/RegistroPageStyle";
 import firebaseRD from "../../FirebaseRD";
 
 class Registro extends React.Component {
-	static navigationOptions = {
-		title: "Scv Chatter",
-	};
-
 	state = {
-		name: "Alex B",
-		email: "test3@gmail.com",
-		password: "test123",
+		name: "Teste1",
+		email: "teste1@teste1.com",
+		password: "123456",
 		avatar: "",
 	};
 
-	onPressCreate = async () => {
-		console.log("create account... email:" + this.state.email);
+	registrar = async () => {
 		try {
 			const user = {
 				name: this.state.name,
@@ -32,16 +33,21 @@ class Registro extends React.Component {
 				avatar: this.state.avatar,
 			};
 			await firebaseRD.registro(user);
+			this.goLogin();
 		} catch ({ message }) {
-			console.log("create account failed. catch error:" + message);
+			console.log("ERROR:" + message);
 		}
 	};
+
+	goLogin() {
+		this.props.navigation.replace("Login");
+	}
 
 	onChangeTextEmail = (email) => this.setState({ email });
 	onChangeTextPassword = (password) => this.setState({ password });
 	onChangeTextName = (name) => this.setState({ name });
 
-	onImageUpload = async () => {
+	imageUpload = async () => {
 		const { status: cameraRollPerm } = await Permissions.askAsync(
 			Permissions.CAMERA_ROLL
 		);
@@ -50,7 +56,7 @@ class Registro extends React.Component {
 			if (cameraRollPerm === "granted") {
 				console.log("choosing image granted...");
 				let pickerResult = await ImagePicker.launchImageLibraryAsync({
-					allowsEditing: true,
+					allowsEditing: false,
 					aspect: [4, 3],
 				});
 				console.log(
@@ -70,90 +76,95 @@ class Registro extends React.Component {
 					wantedheight = wantedMaxSize;
 				}
 				console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
-				let resizedUri = await new Promise((resolve, reject) => {
-					ImageEditor.cropImage(
-						pickerResult.uri,
-						{
-							offset: { x: 0, y: 0 },
-							size: { width: pickerResult.width, height: pickerResult.height },
-							displaySize: { width: wantedwidth, height: wantedheight },
-							resizeMode: "contain",
-						},
-						(uri) => resolve(uri),
-						() => reject()
-					);
-				});
-				let uploadUrl = await firebaseRD.uploadImage(resizedUri);
+				// let resizedUri = await new Promise((resolve, reject) => {
+				// 	ImageEditor.cropImage(
+				// 		pickerResult.uri,
+				// 		{
+				// 			offset: { x: 0, y: 0 },
+				// 			size: { width: pickerResult.width, height: pickerResult.height },
+				// 			displaySize: { width: wantedwidth, height: wantedheight },
+				// 			resizeMode: "contain",
+				// 		},
+				// 		(uri) => resolve(uri),
+				// 		() => reject()
+				// 	);
+				// });
+				// let uploadUrl = await firebaseRD.uploadImage(resizedUri);
+
+				let uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
+
 				//let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
 				this.setState({ avatar: uploadUrl });
 				console.log(" - await upload successful url:" + uploadUrl);
 				console.log(
 					" - await upload successful avatar state:" + this.state.avatar
 				);
-				await firebaseRD.updateAvatar(uploadUrl); //might failed
+				firebaseRD.updateAvatar(uploadUrl); //might failed
 			}
 		} catch (err) {
-			console.log("onImageUpload error:" + err.message);
+			isole.log("onImageUpload error:" + err.message);
 			alert("Upload image error:" + err.message);
 		}
 	};
 
 	render() {
 		return (
-			<View>
-				<Text style={styles.title}>Email:</Text>
-				<TextInput
-					style={styles.nameInput}
-					placeHolder="test3@gmail.com"
-					onChangeText={this.onChangeTextEmail}
-					value={this.state.email}
-				/>
-				<Text style={styles.title}>Password:</Text>
-				<TextInput
-					style={styles.nameInput}
-					onChangeText={this.onChangeTextPassword}
-					value={this.state.password}
-				/>
-				<Text style={styles.title}>Name:</Text>
-				<TextInput
-					style={styles.nameInput}
-					onChangeText={this.onChangeTextName}
-					value={this.state.name}
-				/>
-				<Button
-					title="Create Account"
-					style={styles.buttonText}
-					onPress={this.onPressCreate}
-				/>
-				<Button
-					title="Upload Avatar Image"
-					style={styles.buttonText}
-					onPress={this.onImageUpload}
-				/>
+			<View style={styles.container}>
+				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+					<ScrollView style={styles.container}>
+						<View style={styles.logoView}>
+							<Image style={styles.logo} source={require("../img/chat.png")} />
+						</View>
+
+						<View style={(styles.container, styles.mt)}>
+							<TextInput
+								style={styles.input}
+								placeholder="Nome"
+								placeholderTextColor="#aaaaaa"
+								onChangeText={this.onChangeTextName}
+								value={this.state.name}
+								underlineColorAndroid="transparent"
+								autoCapitalize="words"
+							/>
+							<TextInput
+								style={styles.input}
+								placeholder="E-mail"
+								placeholderTextColor="#aaaaaa"
+								onChangeText={this.onChangeTextEmail}
+								value={this.state.email}
+								underlineColorAndroid="transparent"
+								autoCapitalize="none"
+							/>
+							<TextInput
+								style={styles.input}
+								placeholderTextColor="#aaaaaa"
+								secureTextEntry
+								placeholder="Password"
+								onChangeText={this.onChangeTextPassword}
+								value={this.state.password}
+								underlineColorAndroid="transparent"
+								autoCapitalize="none"
+							/>
+
+							<TouchableOpacity
+								style={styles.button}
+								onPress={this.registrar}>
+								<Text style={styles.buttonTitle}>Confirmar</Text>
+							</TouchableOpacity>
+
+							<View style={styles.footerView}>
+								<Text style={styles.footerText}>
+									<Text onPress={this.imageUpload}>
+										Upload foto de perfil
+									</Text>
+								</Text>
+							</View>
+						</View>
+					</ScrollView>
+				</KeyboardAvoidingView>
 			</View>
 		);
 	}
 }
-
-const offset = 16;
-const styles = StyleSheet.create({
-	title: {
-		marginTop: offset,
-		marginLeft: offset,
-		fontSize: offset,
-	},
-	nameInput: {
-		height: offset * 2,
-		margin: offset,
-		paddingHorizontal: offset,
-		borderColor: "#111111",
-		borderWidth: 1,
-		fontSize: offset,
-	},
-	buttonText: {
-		marginLeft: offset,
-		fontSize: 42,
-	},
-});
 
 export default Registro;

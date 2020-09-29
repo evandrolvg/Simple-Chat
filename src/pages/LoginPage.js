@@ -3,13 +3,14 @@ import { Constants, ImagePicker, Permissions } from "expo";
 import {
 	Text,
 	TextInput,
+	ScrollView,
 	TouchableOpacity,
 	View,
 	Button,
 	ImageEditor,
 	KeyboardAvoidingView,
 	ActivityIndicator,
-	Image
+	Image,
 } from "react-native";
 
 import styles from "../styles/LoginPageStyle";
@@ -19,20 +20,14 @@ import { auth, initializeApp, storage } from "firebase";
 import uuid from "uuid";
 
 class Login extends React.Component {
-	static navigationOptions = {
-		title: "Simple Chat",
-	};
-
 	state = {
-		name: "Alex B",
-		email: "test3@gmail.com",
-		password: "test123",
+		name: "Teste1",
+		email: "teste1@teste1.com",
+		password: "123456",
 		avatar: "",
 	};
 
-	// using Fire.js
-	onPressLogin = async () => {
-		console.log("pressing login... email:" + this.state.email);
+	logar = async () => {
 		const user = {
 			name: this.state.name,
 			email: this.state.email,
@@ -42,22 +37,20 @@ class Login extends React.Component {
 
 		const response = firebaseRD.login(
 			user,
-			this.loginSuccess,
-			this.loginFailed
+			this.loginSucesso,
+			this.loginFalha
 		);
 	};
 
-	loginSuccess = () => {
-		console.log("login successful, navigate to chat.");
+	loginSucesso = () => {
 		this.props.navigation.navigate("Chat", {
 			name: this.state.name,
 			email: this.state.email,
 			avatar: this.state.avatar,
 		});
 	};
-	loginFailed = () => {
-		console.log("login failed ***");
-		alert("Login failure. Please tried again.");
+	loginFalha = () => {
+		alert("Erro ao logar. Tente novamente.");
 	};
 
 	onChangeTextEmail = (email) => this.setState({ email });
@@ -67,72 +60,54 @@ class Login extends React.Component {
 		return (
 			<View style={styles.container}>
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
-					<View style={styles.logoView}>
-						<Image style={styles.logo} source={require("../img/chat.png")} />
-					</View>
-
-					<View style={(styles.container, styles.mt)}>
-						<TextInput
-							style={styles.input}
-							placeholder="E-mail"
-							placeholderTextColor="#aaaaaa"
-							onChangeText={this.onChangeTextEmail}
-							value={this.state.email}
-							underlineColorAndroid="transparent"
-							autoCapitalize="none"
-						/>
-						<TextInput
-							style={styles.input}
-							placeholderTextColor="#aaaaaa"
-							secureTextEntry
-							placeholder="Password"
-							onChangeText={this.onChangeTextPassword}
-							value={this.state.password}
-							underlineColorAndroid="transparent"
-							autoCapitalize="none"
-						/>
-
-						<TouchableOpacity style={styles.button} onPress={this.onPressLogin}>
-							<Text style={styles.buttonTitle}>Log in</Text>
-						</TouchableOpacity>
-
-						<View style={styles.footerView}>
-							<Text style={styles.footerText}>
-								<Text
-									onPress={() => this.props.navigation.navigate("Registro")}
-								>
-								Não possui conta? Cadastre-se
-								</Text>
-							</Text>
+					<ScrollView style={styles.container}>
+						<View style={styles.logoView}>
+							<Image style={styles.logo} source={require("../img/chat.png")} />
 						</View>
 
-						
-					</View>
+						<View style={(styles.container, styles.mt)}>
+							<TextInput
+								style={styles.input}
+								placeholder="E-mail"
+								placeholderTextColor="#aaaaaa"
+								onChangeText={this.onChangeTextEmail}
+								value={this.state.email}
+								underlineColorAndroid="transparent"
+								autoCapitalize="none"
+							/>
+							<TextInput
+								style={styles.input}
+								placeholderTextColor="#aaaaaa"
+								secureTextEntry
+								placeholder="Password"
+								onChangeText={this.onChangeTextPassword}
+								value={this.state.password}
+								underlineColorAndroid="transparent"
+								autoCapitalize="none"
+							/>
+
+							<TouchableOpacity
+								style={styles.button}
+								onPress={this.logar}
+							>
+								<Text style={styles.buttonTitle}>Entrar</Text>
+							</TouchableOpacity>
+
+							<View style={styles.footerView}>
+								<Text style={styles.footerText}>
+									<Text
+										onPress={() => this.props.navigation.navigate("Registro")}
+									>
+										Não possui conta? Cadastre-se
+									</Text>
+								</Text>
+							</View>
+						</View>
+					</ScrollView>
 				</KeyboardAvoidingView>
 			</View>
 		);
 	}
 }
-
-// const offset = 16;
-// const styles = StyleSheet.create({
-// 	title: {
-// 		marginTop: offset,
-// 		marginLeft: offset,
-// 		fontSize: offset,
-// 	},
-// 	nameInput: {
-// 		height: offset * 2,
-// 		margin: offset,
-// 		paddingHorizontal: offset,
-// 		borderColor: "#111111",
-// 		borderWidth: 1,
-// 		fontSize: offset,
-// 	},
-// 	buttonText: {
-// 		marginLeft: offset,
-// 		fontSize: 42,
-// 	},
-// });
 
 export default Login;

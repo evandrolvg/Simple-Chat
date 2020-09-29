@@ -15,7 +15,7 @@ const AppNavigator = createStackNavigator(
 		Registro: {
 			screen: Registro,
 			navigationOptions: {
-				title: "Hábitos",
+				title: "Cadastro",
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
@@ -25,7 +25,7 @@ const AppNavigator = createStackNavigator(
 		Chat: {
 			screen: Chat,
 			navigationOptions: {
-				title: "Hábitos",
+				title: "Chat",
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
@@ -35,11 +35,9 @@ const AppNavigator = createStackNavigator(
 	},
 	{
 		defaultNavigationOptions: {
-			title: "MyHabitTimeline",
 			headerTintColor: "white",
 			headerStyle: {
-				backgroundColor: "#6542f4",
-				borderBottomColor: "#f4f2ff",
+				backgroundColor: "#005cc5",
 			},
 			headerTitleStyle: {
 				color: "white",

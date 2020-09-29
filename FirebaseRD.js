@@ -45,33 +45,58 @@ class FirebaseRD {
 			.auth()
 			.createUserWithEmailAndPassword(user.email, user.password)
 			.then(
-				function () {
-					console.log(
-						"USUÁRIO CRIADO. EMAIL:" +
-							user.email +
-							" NAME:" +
-							user.name
-					);
-					
-					var userf = firebase.auth().currentUser;
-					userf.updateProfile({ displayName: user.name }).then(
-						function () {
-							alert(
-								"User " + user.name + " was created successfully. Please login."
-							);
-						},
-						function (error) {
-							console.warn("Error");
-						}
-					);
-				},
-				function (error) {
-					console.error(
-						"ERROR:" + typeof error + " string:" + error.message
-					);
-					alert("Falha ao criar conta. (Error: " + error.message + ")");
-				}
-			);
+					function () {
+						console.log(
+							"USUÁRIO CRIADO. EMAIL:" + user.email + " NAME:" + user.name
+						);
+
+						var userf = firebase.auth().currentUser;
+						userf.updateProfile({ displayName: user.name }).then(
+							function () {
+								alert(
+									"Usuário " + user.name + " criado com sucesso. Faça login."
+								);
+								
+							},
+							function (error) {
+								console.warn("Error");
+							}
+						);
+					}
+			)
+			.catch((error) => {
+				console.error("ERROR:" + typeof error + " string:" + error.message);
+
+				alert(
+					"Falha ao criar conta. (" +
+						this.getMsgByErrorCode(error.code) +
+						")"
+				);
+			})
+
+			// .then(
+			// 	function () {
+			// 		console.log(
+			// 			"USUÁRIO CRIADO. EMAIL:" + user.email + " NAME:" + user.name
+			// 		);
+
+			// 		var userf = firebase.auth().currentUser;
+			// 		userf.updateProfile({ displayName: user.name }).then(
+			// 			function () {
+			// 				alert(
+			// 					"User " + user.name + " was created successfully. Please login."
+			// 				);
+			// 			},
+			// 			function (error) {
+			// 				console.warn("Error");
+			// 			}
+			// 		);
+			// 	},
+			// 	function (error) {
+			// 		console.error("ERROR:" + typeof error + " string:" + error.message);
+			// 		alert("Falha ao criar conta. (Error: " + error.message + ")");
+			// 	}
+			// );
 	};
 
 	uploadImage = async (uri) => {
@@ -112,10 +137,13 @@ class FirebaseRD {
 				}
 			);
 		} else {
-			alert("Não foi possível realizar o upload da imagem. Faça login e tente novamente.");
+			alert(
+				"Não foi possível realizar o upload da imagem. Faça login e tente novamente."
+			);
 		}
 	};
 
+	
 	onLogout = (user) => {
 		firebase
 			.auth()
@@ -178,6 +206,27 @@ class FirebaseRD {
 
 	refOff() {
 		this.ref.off();
+	}
+
+	getMsgByErrorCode(errorCode) {
+		switch (errorCode) {
+			case "auth/wrong-password":
+				return "Senha incorreta!";
+			case "auth/invalid-email":
+				return "E-mail inválido!";
+			case "auth/user-not-found":
+				return "Usuário não encontrado!";
+			case "auth/user-disabled":
+				return "Usuário desativado!";
+			case "auth/email-already-in-use":
+				return "Usuário já está em uso!";
+			case "auth/operation-not-allowed":
+				return "Operação não permitida!";
+			case "auth/weak-password":
+				return "Senha muito fraca!";
+			default:
+				return "Erro desconhecido!";
+		}
 	}
 }
 
