@@ -47,65 +47,65 @@ class Registro extends React.Component {
 	onChangeTextPassword = (password) => this.setState({ password });
 	onChangeTextName = (name) => this.setState({ name });
 
-	imageUpload = async () => {
-		const { status: cameraRollPerm } = await Permissions.askAsync(
-			Permissions.CAMERA_ROLL
-		);
-		try {
-			// only if user allows permission to camera roll
-			if (cameraRollPerm === "granted") {
-				console.log("choosing image granted...");
-				let pickerResult = await ImagePicker.launchImageLibraryAsync({
-					allowsEditing: false,
-					aspect: [4, 3],
-				});
-				console.log(
-					"ready to upload... pickerResult json:" + JSON.stringify(pickerResult)
-				);
+	// imageUpload = async () => {
+	// 	const { status: cameraRollPerm } = await Permissions.askAsync(
+	// 		Permissions.CAMERA_ROLL
+	// 	);
+	// 	try {
+	// 		// only if user allows permission to camera roll
+	// 		if (cameraRollPerm === "granted") {
+	// 			console.log("choosing image granted...");
+	// 			let pickerResult = await ImagePicker.launchImageLibraryAsync({
+	// 				allowsEditing: false,
+	// 				aspect: [4, 3],
+	// 			});
+	// 			console.log(
+	// 				"ready to upload... pickerResult json:" + JSON.stringify(pickerResult)
+	// 			);
 
-				var wantedMaxSize = 150;
-				var rawheight = pickerResult.height;
-				var rawwidth = pickerResult.width;
+	// 			var wantedMaxSize = 150;
+	// 			var rawheight = pickerResult.height;
+	// 			var rawwidth = pickerResult.width;
 
-				var ratio = rawwidth / rawheight;
-				var wantedwidth = wantedMaxSize;
-				var wantedheight = wantedMaxSize / ratio;
-				// check vertical or horizontal
-				if (rawheight > rawwidth) {
-					wantedwidth = wantedMaxSize * ratio;
-					wantedheight = wantedMaxSize;
-				}
-				console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
-				// let resizedUri = await new Promise((resolve, reject) => {
-				// 	ImageEditor.cropImage(
-				// 		pickerResult.uri,
-				// 		{
-				// 			offset: { x: 0, y: 0 },
-				// 			size: { width: pickerResult.width, height: pickerResult.height },
-				// 			displaySize: { width: wantedwidth, height: wantedheight },
-				// 			resizeMode: "contain",
-				// 		},
-				// 		(uri) => resolve(uri),
-				// 		() => reject()
-				// 	);
-				// });
-				// let uploadUrl = await firebaseRD.uploadImage(resizedUri);
+	// 			var ratio = rawwidth / rawheight;
+	// 			var wantedwidth = wantedMaxSize;
+	// 			var wantedheight = wantedMaxSize / ratio;
+	// 			// check vertical or horizontal
+	// 			if (rawheight > rawwidth) {
+	// 				wantedwidth = wantedMaxSize * ratio;
+	// 				wantedheight = wantedMaxSize;
+	// 			}
+	// 			console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
+	// 			// let resizedUri = await new Promise((resolve, reject) => {
+	// 			// 	ImageEditor.cropImage(
+	// 			// 		pickerResult.uri,
+	// 			// 		{
+	// 			// 			offset: { x: 0, y: 0 },
+	// 			// 			size: { width: pickerResult.width, height: pickerResult.height },
+	// 			// 			displaySize: { width: wantedwidth, height: wantedheight },
+	// 			// 			resizeMode: "contain",
+	// 			// 		},
+	// 			// 		(uri) => resolve(uri),
+	// 			// 		() => reject()
+	// 			// 	);
+	// 			// });
+	// 			// let uploadUrl = await firebaseRD.uploadImage(resizedUri);
 
-				let uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
+	// 			let uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
 
-				//let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
-				this.setState({ avatar: uploadUrl });
-				console.log(" - await upload successful url:" + uploadUrl);
-				console.log(
-					" - await upload successful avatar state:" + this.state.avatar
-				);
-				firebaseRD.updateAvatar(uploadUrl); //might failed
-			}
-		} catch (err) {
-			isole.log("onImageUpload error:" + err.message);
-			alert("Upload image error:" + err.message);
-		}
-	};
+	// 			//let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
+	// 			this.setState({ avatar: uploadUrl });
+	// 			console.log(" - await upload successful url:" + uploadUrl);
+	// 			console.log(
+	// 				" - await upload successful avatar state:" + this.state.avatar
+	// 			);
+	// 			firebaseRD.updateAvatar(uploadUrl); //might failed
+	// 		}
+	// 	} catch (err) {
+	// 		isole.log("onImageUpload error:" + err.message);
+	// 		alert("Upload image error:" + err.message);
+	// 	}
+	// };
 
 	render() {
 		return (
@@ -152,13 +152,13 @@ class Registro extends React.Component {
 								<Text style={styles.buttonTitle}>Confirmar</Text>
 							</TouchableOpacity>
 
-							<View style={styles.footerView}>
+							{/* <View style={styles.footerView}>
 								<Text style={styles.footerText}>
 									<Text onPress={this.imageUpload}>
 										Upload foto de perfil
 									</Text>
 								</Text>
-							</View>
+							</View> */}
 						</View>
 					</ScrollView>
 				</KeyboardAvoidingView>
