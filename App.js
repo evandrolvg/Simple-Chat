@@ -1,3 +1,6 @@
+import React from "react";
+import { Text, Button, TouchableOpacity } from "react-native";
+import { IconButton } from "react-native-paper";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import Login from "./src/pages/LoginPage";
@@ -24,13 +27,18 @@ const AppNavigator = createStackNavigator(
 		},
 		Chat: {
 			screen: Chat,
-			navigationOptions: {
+			navigationOptions: ({ navigate, navigation }) => ({
 				title: "Chat",
+				headerRight: (
+					<TouchableOpacity onPress={() => navigation.navigate("Login")}>
+						<IconButton icon='logout' size={32} color='white' />
+					</TouchableOpacity>
+				),
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
 				},
-			},
+			}),
 		},
 	},
 	{

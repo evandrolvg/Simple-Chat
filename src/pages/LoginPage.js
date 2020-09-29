@@ -35,11 +35,7 @@ class Login extends React.Component {
 			avatar: this.state.avatar,
 		};
 
-		const response = firebaseRD.login(
-			user,
-			this.loginSucesso,
-			this.loginFalha
-		);
+		const response = firebaseRD.login(user, this.loginSucesso, this.loginFalha);
 	};
 
 	loginSucesso = () => {
@@ -51,6 +47,28 @@ class Login extends React.Component {
 	};
 	loginFalha = () => {
 		alert("Erro ao logar. Tente novamente.");
+	};
+
+	logout = () => {
+		console.log('LOGOUT 1');
+		const user = {
+			name: this.state.name,
+			email: this.state.email,
+			password: this.state.password,
+			avatar: this.state.avatar,
+		};
+
+		const response = firebaseRD.logout(
+			user,
+			this.logoutSucesso,
+			this.logoutFalha
+		);
+	};
+	logoutSucesso = () => {
+		this.props.navigation.navigate("Login");
+	};
+	logoutFalha = () => {
+		alert("Erro ao realizar logout. Tente novamente.");
 	};
 
 	onChangeTextEmail = (email) => this.setState({ email });
@@ -86,10 +104,7 @@ class Login extends React.Component {
 								autoCapitalize="none"
 							/>
 
-							<TouchableOpacity
-								style={styles.button}
-								onPress={this.logar}
-							>
+							<TouchableOpacity style={styles.button} onPress={this.logar}>
 								<Text style={styles.buttonTitle}>Entrar</Text>
 							</TouchableOpacity>
 

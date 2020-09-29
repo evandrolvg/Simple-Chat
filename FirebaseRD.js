@@ -144,16 +144,11 @@ class FirebaseRD {
 	};
 
 	
-	onLogout = (user) => {
+	logout = (user) => {
 		firebase
 			.auth()
 			.signOut()
-			.then(function () {
-				console.log("Logout ok.");
-			})
-			.catch(function (error) {
-				console.log("Erro logout");
-			});
+			.then(success_callback, failed_callback);
 	};
 
 	get uid() {
@@ -177,7 +172,7 @@ class FirebaseRD {
 			text,
 			user,
 		};
-		// console.log("MENSAGEM: " + message.timestamp);
+		// console.log("MENSAGEM: " + message);
 		return message;
 	};
 
