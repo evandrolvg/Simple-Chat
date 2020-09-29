@@ -7,9 +7,11 @@ import {
 	View,
 	Button,
 	ImageEditor,
-
+	KeyboardAvoidingView,
+	ActivityIndicator,
+	Image
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import styles from "../styles/LoginPageStyle";
 import firebaseRD from "../../FirebaseRD";
 import firebase from "firebase";
@@ -18,7 +20,7 @@ import uuid from "uuid";
 
 class Login extends React.Component {
 	static navigationOptions = {
-		title: "Scv Chatter",
+		title: "Simple Chat",
 	};
 
 	state = {
@@ -64,44 +66,49 @@ class Login extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<KeyboardAwareScrollView
-					style={{ flex: 1, width: "100%" }}
-					keyboardShouldPersistTaps="always"
-				>
-					<Image
-						style={styles.logo}
-						source={require("../../../assets/icon.png")}
-					/>
+				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+					<View style={styles.logoView}>
+						<Image style={styles.logo} source={require("../img/chat.png")} />
+					</View>
 
-					<TextInput
-						style={styles.input}
-						placeholder="E-mail"
-						placeholderTextColor="#aaaaaa"
-						onChangeText={this.onChangeTextEmail}
-						value={this.state.email}
-						underlineColorAndroid="transparent"
-						autoCapitalize="none"
-					/>
+					<View style={(styles.container, styles.mt)}>
+						<TextInput
+							style={styles.input}
+							placeholder="E-mail"
+							placeholderTextColor="#aaaaaa"
+							onChangeText={this.onChangeTextEmail}
+							value={this.state.email}
+							underlineColorAndroid="transparent"
+							autoCapitalize="none"
+						/>
+						<TextInput
+							style={styles.input}
+							placeholderTextColor="#aaaaaa"
+							secureTextEntry
+							placeholder="Password"
+							onChangeText={this.onChangeTextPassword}
+							value={this.state.password}
+							underlineColorAndroid="transparent"
+							autoCapitalize="none"
+						/>
 
-					
-					<Text style={styles.title}>Password:</Text>
-					<TextInput
-						style={styles.nameInput}
-						onChangeText={this.onChangeTextPassword}
-						value={this.state.password}
-					/>
-					<Button
-						title="Login"
-						style={styles.buttonText}
-						onPress={this.onPressLogin}
-					/>
+						<TouchableOpacity style={styles.button} onPress={this.onPressLogin}>
+							<Text style={styles.buttonTitle}>Log in</Text>
+						</TouchableOpacity>
 
-					<Button
-						title="Go to create new account"
-						style={styles.buttonText}
-						onPress={() => this.props.navigation.navigate("Registro")}
-					/>
-				</KeyboardAwareScrollView>
+						<View style={styles.footerView}>
+							<Text style={styles.footerText}>
+								<Text
+									onPress={() => this.props.navigation.navigate("Registro")}
+								>
+								Não possui conta? Cadastre-se
+								</Text>
+							</Text>
+						</View>
+
+						
+					</View>
+				</KeyboardAvoidingView>
 			</View>
 		);
 	}
