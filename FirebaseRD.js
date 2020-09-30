@@ -20,13 +20,13 @@ class FirebaseRD {
 	}
 
 	login = async (user, success_callback, failed_callback) => {
-		console.log("LOGIN");
 		const output = await firebase
 			.auth()
 			.signInWithEmailAndPassword(user.email, user.password)
 			.then(success_callback, failed_callback);
 	};
 
+	//se logado antes
 	observeAuth = () =>
 		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
 
@@ -73,30 +73,6 @@ class FirebaseRD {
 						")"
 				);
 			})
-
-			// .then(
-			// 	function () {
-			// 		console.log(
-			// 			"USUÁRIO CRIADO. EMAIL:" + user.email + " NAME:" + user.name
-			// 		);
-
-			// 		var userf = firebase.auth().currentUser;
-			// 		userf.updateProfile({ displayName: user.name }).then(
-			// 			function () {
-			// 				alert(
-			// 					"User " + user.name + " was created successfully. Please login."
-			// 				);
-			// 			},
-			// 			function (error) {
-			// 				console.warn("Error");
-			// 			}
-			// 		);
-			// 	},
-			// 	function (error) {
-			// 		console.error("ERROR:" + typeof error + " string:" + error.message);
-			// 		alert("Falha ao criar conta. (Error: " + error.message + ")");
-			// 	}
-			// );
 	};
 
 	uploadImage = async (uri) => {
@@ -186,8 +162,7 @@ class FirebaseRD {
 		return firebase.database.ServerValue.TIMESTAMP;
 	}
 
-	// send the message to the Backend
-	send = (messages) => {
+	enviarMsg = (messages) => {
 		for (let i = 0; i < messages.length; i++) {
 			const { text, user } = messages[i];
 			const message = {

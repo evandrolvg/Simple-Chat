@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Button, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
