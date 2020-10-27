@@ -11,6 +11,7 @@ import {
 	KeyboardAvoidingView,
 	ActivityIndicator,
 	Image,
+	Alert
 } from "react-native";
 
 import styles from "../styles/LoginPageStyle";
@@ -20,6 +21,11 @@ import { auth, initializeApp, storage } from "firebase";
 import uuid from "uuid";
 
 class Login extends React.Component {
+	constructor(props) {
+		super(props);
+		this.passwordTextInputRef = React.createRef();
+	} 
+
 	state = {
 		name: "Teste1",
 		email: "teste1@teste1.com",
@@ -45,8 +51,16 @@ class Login extends React.Component {
 			avatar: this.state.avatar,
 		});
 	};
+
 	loginFalha = () => {
-		alert("Erro ao logar. Tente novamente.");
+		Alert.alert(
+      		"Erro ao logar",
+      		"Tente novamente.",
+      		[
+				{ text: "OK", onPress: () => console.log("OK Pressed") }
+			],
+			{ cancelable: false }
+	    );
 	};
 
 	logout = () => {
@@ -64,11 +78,20 @@ class Login extends React.Component {
 			this.logoutFalha
 		);
 	};
+
 	logoutSucesso = () => {
 		this.props.navigation.navigate("Login");
 	};
+
 	logoutFalha = () => {
-		alert("Erro ao realizar logout. Tente novamente.");
+		Alert.alert(
+      		"Erro ao deslogar",
+      		"Tente novamente.",
+      		[
+				{ text: "OK", onPress: () => console.log("OK Pressed") }
+			],
+			{ cancelable: false }
+	    );	
 	};
 
 	onChangeTextEmail = (email) => this.setState({ email });
@@ -77,7 +100,7 @@ class Login extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+				<KeyboardAvoidingView keyboardVerticalOffset = {-500} behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<View style={styles.logoView}>
 							<Image style={styles.logo} source={require("../img/chat.png")} />
@@ -92,7 +115,11 @@ class Login extends React.Component {
 								value={this.state.email}
 								underlineColorAndroid="transparent"
 								autoCapitalize="none"
+								// autoFocus={true} 
+								returnKeyType="next"
+                				onSubmitEditing={() => { this.passwordTextInputRef.current.focus(); }}
 							/>
+
 							<TextInput
 								style={styles.input}
 								placeholderTextColor="#aaaaaa"
@@ -102,6 +129,7 @@ class Login extends React.Component {
 								value={this.state.password}
 								underlineColorAndroid="transparent"
 								autoCapitalize="none"
+								ref={this.passwordTextInputRef}
 							/>
 
 							<TouchableOpacity style={styles.button} onPress={this.logar}>
