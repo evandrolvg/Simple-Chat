@@ -10,10 +10,12 @@ import {
 	KeyboardAvoidingView,
 	ActivityIndicator,
 	Image,
-	Alert
+  Alert,
+  FlatList,
 } from "react-native";
+import { List, Divider } from 'react-native-paper';
 
-import styles from "../styles/LoginPageStyle";
+import styles from "../styles/SalasPaginaStyle";
 import NavigationBar from "react-native-navbar";
 import { IconButton } from "react-native-paper";
 import firebaseRD from "../../FirebaseRD";
@@ -41,25 +43,7 @@ class SalasPagina extends React.Component {
     };
   }
 
-  // onDataChange(items) {
-  //   let salas = [];
-
-  //   items.forEach((item) => {
-  //     let key = item.key;
-  //     let data = item.val();
-  //     salas.push({
-  //       key: key,
-  //       title: data.title,
-  //       description: data.description,
-  //       published: data.published,
-  //     });
-  //   });
-
-  //   this.setState({
-  //     salas: salas,
-  //   });
-  // }
-
+  
   componentDidMount() {
     // start listening for firebase updates
     this.listenSalas(firebaseRD.refSalas);
@@ -75,17 +59,16 @@ class SalasPagina extends React.Component {
         });
       });
 
-      console.log(salas);
+      
       this.setState({
         salas: salas
       });
     });
   }
-  
-  // componentDidMount() {
-  //   firebaseRD.getSalas();
-  // }
 
+  
+  
+  
   // componentWillUnmount() {
   //   firebaseRD.getSalas().off("value", this.onDataChange);
   // }
@@ -94,31 +77,56 @@ class SalasPagina extends React.Component {
     // const { salas, currentSala, currentIndex } = this.state;
 
     return (
-      	
+        
       <View style={styles.container}>
-	      <ScrollView style={styles.container}>
-						<View style={styles.logoView}></View>
-            
-            {this.state.salas &&
-              this.state.salas.map((sala, index) => (
-                
-                <Text
-                  key={index} onPress={() => this.props.navigation.navigate("Chat", {
+        <FlatList
+          data={this.state.salas}
+          keyExtractor={item => item.key}
+          ItemSeparatorComponent={() => <Divider />}
+          renderItem={({ item }) => (
+            <List.Item
+              title={item.nome}
+              description="Item description"
+              titleNumberOfLines={1}
+              titleStyle={styles.listTitle}
+              descriptionStyle={styles.listDescription}
+              descriptionNumberOfLines={1}
+               onPress={() => this.props.navigation.navigate("Chat", {
                                                                                         name: this.state.name,
                                                                                         email: this.state.email,
                                                                                         avatar: this.state.avatar,
-                                                                                        salaKey: sala.key,
-                                                                                        salaNome: sala.nome
+                                                                                        salaKey: item.key,
+                                                                                        salaNome: item.nome
                                                                                       })}
-                >
-                  {sala.nome}
-                </Text>
-              ))}
+            />
+          )}
+        />
+      </View>
+     
+    //  <View style={styles.container}>
+	  //     <ScrollView style={styles.container}>
+		// 				<View style={styles.logoView}></View>
+            
+    //         {this.state.salas &&
+    //           this.state.salas.map((sala, index) => (
+                
+    //             <Text
+    //               key={index} onPress={() => this.props.navigation.navigate("Chat", {
+    //                                                                                     name: this.state.name,
+    //                                                                                     email: this.state.email,
+    //                                                                                     avatar: this.state.avatar,
+    //                                                                                     salaKey: sala.key,
+    //                                                                                     salaNome: sala.nome
+    //                                                                                   })}
+    //             >
+    //               {sala.nome}
+    //             </Text>
+    //           ))}
             
 
           
-        </ScrollView>
-        </View>
+    //     </ScrollView>
+    //     </View>
     );
   }
 

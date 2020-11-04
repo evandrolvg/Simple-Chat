@@ -23,6 +23,12 @@ import time from "../../Timer";
 // };
 
 class Chat extends React.Component {
+	static navigationOptions = ({ navigation }) => {
+		return {
+		title: navigation.getParam('salaNome', 'A Nested Details Screen'),
+		};
+	};
+	
 	constructor(props) {
 		super(props);
 	}

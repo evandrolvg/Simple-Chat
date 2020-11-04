@@ -39,14 +39,14 @@ export default function AddRoomScreen() {
   }
   return (
     <View style={styles.rootContainer}>
-      <View style={styles.closeButtonContainer}>
+      {/* <View style={styles.closeButtonContainer}>
         <IconButton
           icon='close-circle'
           size={36}
           color='#6646ee'
           onPress={() => navigation.goBack()}
         />
-      </View>
+      </View> */}
       <View style={styles.innerContainer}>
         <Title style={styles.title}>Create a new chat room</Title>
         <FormInput

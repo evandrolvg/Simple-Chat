@@ -1,8 +1,8 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import firebaseRD from "./FirebaseRD";
 import Login from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
@@ -10,54 +10,46 @@ import Chat from "./src/pages/ChatPage";
 import AddSala from "./src/pages/AddRoomScreen";
 import Salas from "./src/pages/SalasPagina";
 
-const AppNavigator = createStackNavigator(
-	{
-		Login: {
-			screen: Login,
-			navigationOptions: {
-				headerShown: false,
-			},
-		},
-		Registro: {
-			screen: Registro,
-			navigationOptions: {
-				title: "Cadastro",
-				headerTitleStyle: {
-					textAlign: "left",
-					fontSize: 20,
-				},
-			},
-		},
-		AddSala: {
-			screen: AddSala,
-			navigationOptions: {
-				title: "Cadastro",
-				headerTitleStyle: {
-					textAlign: "left",
-					fontSize: 20,
-				},
-			},
-		},
+const AppStack = createStackNavigator(
+		{
+		
+
 		Salas: {
 			screen: Salas,
-			navigationOptions: {
+			navigationOptions: ({ navigate, navigation }) => ({
 				title: "Salas",
+				headerRight: (
+					<TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
+						<IconButton icon='message-plus' size={32} color='white' />
+					</TouchableOpacity>
+				),
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
 				},
-			},
+			}),
 		},
 		Chat: {
 			screen: Chat,
 			navigationOptions: ({ navigate, navigation }) => ({
-				// title: this.props.navigation.state.params.salaNome,
+				title: navigation.getParam('salaNome'),
 				
 				headerRight: (
 					<TouchableOpacity onPress={() => firebaseRD.logout()}>
 						<IconButton icon='logout' size={32} color='white' />
 					</TouchableOpacity>
 				),
+				headerTitleStyle: {
+					textAlign: "left",
+					fontSize: 20,
+				},
+			}),
+		},
+		AddSala: {
+			screen: AddSala,
+			navigationOptions: ({ navigate, navigation }) => ({
+				title: "AddSala",
+				
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
@@ -81,6 +73,35 @@ const AppNavigator = createStackNavigator(
 	}
 );
 
-const AppContainer = createAppContainer(AppNavigator);
+const AuthStack = createStackNavigator(
+	{  
+		Login: {
+			screen: Login,
+			navigationOptions: {
+				headerShown: false,
+			},
+		},
+		Registro: {
+			screen: Registro,
+			navigationOptions: {
+				title: "Cadastro",
+				headerTitleStyle: {
+					textAlign: "left",
+					fontSize: 20,
+				},
+			},
+		},	
+	});
 
-export default AppContainer;
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+    //   AuthLoading: AuthLoadingScreen,
+      App: AppStack,
+      Auth: AuthStack,
+    },
+    {
+      initialRouteName: 'Auth',
+    }
+  )
+);
