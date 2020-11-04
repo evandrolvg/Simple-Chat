@@ -45,11 +45,17 @@ class Login extends React.Component {
 	};
 
 	loginSucesso = () => {
-		this.props.navigation.navigate("Chat", {
+		this.props.navigation.navigate("Salas", {
 			name: this.state.name,
 			email: this.state.email,
 			avatar: this.state.avatar,
 		});
+
+		// this.props.navigation.navigate("Chat", {
+		// 	name: this.state.name,
+		// 	email: this.state.email,
+		// 	avatar: this.state.avatar,
+		// });
 	};
 
 	loginFalha = () => {

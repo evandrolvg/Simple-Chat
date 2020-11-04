@@ -12,6 +12,7 @@ import {
 import styles from "../styles/ChatPageStyle";
 import NavigationBar from "react-native-navbar";
 import { IconButton } from "react-native-paper";
+import firebase from "firebase";
 import firebaseRD from "../../FirebaseRD";
 import time from "../../Timer";
 
@@ -36,6 +37,8 @@ class Chat extends React.Component {
 			email: this.props.navigation.state.params.email,
 			avatar: this.props.navigation.state.params.avatar,
 			image: this.props.navigation.state.params.email,
+			salaKey: this.props.navigation.state.params.salaKey,
+            salaNome: this.props.navigation.state.params.salaNome,
 			id: firebaseRD.uid,
 			_id: firebaseRD.uid, // for gifted-chat
 		};
@@ -88,14 +91,17 @@ class Chat extends React.Component {
 	}
 
 	componentDidMount() {
-		firebaseRD.refOn((message) =>
+		// firebase.database().ref("Messages");
+		// firebase.database().ref(`Messages/${user.salaKey}`)(message) =>;
+		// console.log('sala->'+this.user.salaKey);
+		firebaseRD.refOn(this.user.salaKey, (message) =>
 			this.setState((previousState) => ({
 				messages: GiftedChat.append(previousState.messages, message),
 			}))
 		);
 	}
 	componentWillUnmount() {
-		firebaseRD.refOff();
+		firebaseRD.refOff(this.user.salaKey);
 	}
 }
 

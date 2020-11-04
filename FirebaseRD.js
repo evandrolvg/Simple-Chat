@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import { auth, initializeApp, storage } from 'firebase';
 import uuid from "uuid";
 
 const config = {
@@ -75,12 +76,72 @@ class FirebaseRD {
 			})
 	};
 
+	get refSalas() {
+		return firebase.database().ref("Salas");
+	}
+
+	parseSala = (snapshot) => {
+		const { key: id } = snapshot;
+		const { key: _id } = snapshot; //needed for giftedchat
+
+		const sala = {
+			id,
+			_id,
+			nome
+		};
+		console.log("SALA: " + sala);
+		return sala;
+	};
+
+	getSalas = (callback) => {
+		this.refSalas
+			.limitToLast(100)
+			.on("child_added", (snapshot) => callback(this.parseSala(snapshot)));
+	};
+
+	criarSala = (salaNome) => {
+		console.log(salaNome);
+		const newReference = firebase.database()
+  			.ref('/Salas')
+  			.push();
+
+		console.log('Auto generated key: ', newReference.key);
+		newReference
+		.set({
+			    nome: salaNome,
+				latestMessage: {
+					text: `You have joined the room ${salaNome}.`,
+					createdAt: new Date().getTime()
+				}
+		})
+		.then(() => console.log('Data updated.'));
+
+
+		// firebase.firestore()
+        // .collection('THREADS')
+        // .add({
+        //   name: salaNome,
+        //   latestMessage: {
+        //     text: `You have joined the room ${salaNome}.`,
+        //     createdAt: new Date().getTime()
+        //   }
+        // })
+        // .then(docRef => {
+        //   docRef.collection('MESSAGES').add({
+        //     text: `You have joined the room ${salaNome}.`,
+        //     createdAt: new Date().getTime(),
+        //     system: true
+        //   });
+        //   navigation.navigate('Home');
+        // });
+	};
+
 	uploadImage = async (uri) => {
 		console.log("Imagem upload. URI:" + uri);
 		try {
 			const response = await fetch(uri);
 			const blob = await response.blob();
-			const ref = firebase.storage().ref("avatar").child(uuid.v4());
+			const ref = firebase.storage().ref("avatar").child(this.uid);
 			const task = ref.put(blob);
 
 			return new Promise((resolve, reject) => {
@@ -131,8 +192,13 @@ class FirebaseRD {
 		return (firebase.auth().currentUser || {}).uid;
 	}
 
-	get ref() {
-		return firebase.database().ref("Messages");
+	get currentUser() {
+		return (firebase.auth().currentUser || {});
+	}
+
+	ref(sala) {
+		
+		return firebase.database().ref(`Messages/${sala}`);
 	}
 
 	parse = (snapshot) => {
@@ -152,8 +218,10 @@ class FirebaseRD {
 		return message;
 	};
 
-	refOn = (callback) => {
-		this.ref
+	refOn = (sala, callback) => {
+		console.log('sala');
+		console.log(sala);
+		this.ref(sala)
 			.limitToLast(100)
 			.on("child_added", (snapshot) => callback(this.parse(snapshot)));
 	};
@@ -164,18 +232,23 @@ class FirebaseRD {
 
 	enviarMsg = (messages) => {
 		for (let i = 0; i < messages.length; i++) {
-			const { text, user } = messages[i];
+			const { text, user, salaKey } = messages[i];
+			console.log(user.salaKey);
 			const message = {
+				
 				text,
 				user,
 				createdAt: this.timestamp,
 			};
-			this.ref.push(message);
+			// firebase.database().ref('Messages/${user.salaKey}').push(message);
+			firebase.database().ref(`Messages/${user.salaKey}`).push(message);
+
+			// this.ref.push(message);
 		}
 	};
 
-	refOff() {
-		this.ref.off();
+	refOff(sala) {
+		this.ref(sala).off();
 	}
 
 	getMsgByErrorCode(errorCode) {
