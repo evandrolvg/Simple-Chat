@@ -1,51 +1,27 @@
 import React from "react";
 import {
-	Text,
-	TextInput,
-	ScrollView,
-	TouchableOpacity,
 	View,
-	Button,
-	ImageEditor,
-	KeyboardAvoidingView,
-	ActivityIndicator,
-	Image,
-  Alert,
-  FlatList,
+	FlatList,
 } from "react-native";
 import { List, Divider } from 'react-native-paper';
 
 import styles from "../styles/SalasPaginaStyle";
-import NavigationBar from "react-native-navbar";
-import { IconButton } from "react-native-paper";
 import firebaseRD from "../../FirebaseRD";
-import time from "../../Timer";
-
-// type props = {
-// 	name?: string,
-// 	email?: string,
-// 	avatar?: string,
-// };
 
 class SalasPagina extends React.Component {
 	constructor(props) {
     super(props);
-    // this.onDataChange = this.onDataChange.bind(this);
 
     this.state = {
-      	name: this.props.navigation.state.params.name,
-			email: this.props.navigation.state.params.email,
-			avatar: this.props.navigation.state.params.avatar,
-			image: this.props.navigation.state.params.email,
-			// salaKey: this.props.navigation.state.params.salaKey,
-      //       salaNome: this.props.navigation.state.params.salaNome,
+      name: this.props.navigation.state.params.name,
+      email: this.props.navigation.state.params.email,
+      avatar: this.props.navigation.state.params.avatar,
+      image: this.props.navigation.state.params.email,
       salas: [],
     };
   }
-
   
   componentDidMount() {
-    // start listening for firebase updates
     this.listenSalas(firebaseRD.refSalas);
   }
 
@@ -55,23 +31,20 @@ class SalasPagina extends React.Component {
       dataSnapshot.forEach(child => {
         salas.push({
           nome: child.val().nome,
+          descricao: child.val().descricao,
           key: child.key
         });
       });
-
       
       this.setState({
         salas: salas
       });
     });
   }
-
   
-  
-  
-  // componentWillUnmount() {
-  //   firebaseRD.getSalas().off("value", this.onDataChange);
-  // }
+  componentWillUnmount() {
+		firebaseRD.refSalasOff();
+	}
 
    render() {
     // const { salas, currentSala, currentIndex } = this.state;
@@ -86,7 +59,7 @@ class SalasPagina extends React.Component {
           renderItem={({ item }) => (
             <List.Item
               title={item.nome}
-              description="Item description"
+              description={item.descricao}
               titleNumberOfLines={1}
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}

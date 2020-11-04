@@ -99,7 +99,11 @@ class FirebaseRD {
 			.on("child_added", (snapshot) => callback(this.parseSala(snapshot)));
 	};
 
-	criarSala = (salaNome) => {
+	refSalasOff() {
+		this.refSalas.off();
+	}
+
+	criarSala = (salaNome, salaDescricao) => {
 		console.log(salaNome);
 		const newReference = firebase.database()
   			.ref('/Salas')
@@ -108,13 +112,14 @@ class FirebaseRD {
 		console.log('Auto generated key: ', newReference.key);
 		newReference
 		.set({
-			    nome: salaNome,
-				latestMessage: {
-					text: `You have joined the room ${salaNome}.`,
-					createdAt: new Date().getTime()
-				}
+				nome: salaNome,
+				descricao: salaDescricao,
+				// latestMessage: {
+				// 	text: `You have joined the room ${salaNome}.`,
+				// 	createdAt: new Date().getTime()
+				// }
 		})
-		.then(() => console.log('Data updated.'));
+		.then(() => console.log('Sala criada.'));
 
 
 		// firebase.firestore()

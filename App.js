@@ -7,13 +7,11 @@ import firebaseRD from "./FirebaseRD";
 import Login from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
 import Chat from "./src/pages/ChatPage";
-import AddSala from "./src/pages/AddRoomScreen";
+import AddSala from "./src/pages/AddSalaPagina";
 import Salas from "./src/pages/SalasPagina";
 
 const AppStack = createStackNavigator(
 		{
-		
-
 		Salas: {
 			screen: Salas,
 			navigationOptions: ({ navigate, navigation }) => ({
@@ -48,7 +46,7 @@ const AppStack = createStackNavigator(
 		AddSala: {
 			screen: AddSala,
 			navigationOptions: ({ navigate, navigation }) => ({
-				title: "AddSala",
+				title: "Nova sala",
 				
 				headerTitleStyle: {
 					textAlign: "left",

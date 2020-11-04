@@ -10,7 +10,6 @@ import {
 	ScrollView,
 	View,
 	KeyboardAvoidingView,
-	ActivityIndicator,
 	Image,
 	
 } from "react-native";
