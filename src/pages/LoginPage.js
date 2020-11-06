@@ -33,7 +33,15 @@ class Login extends React.Component {
 		avatar: "",
 	};
 
+	// state = {
+	// 	name: "",
+	// 	email: "",
+	// 	password: "",
+	// 	avatar: "",
+	// };
+
 	logar = async () => {
+		
 		const user = {
 			name: this.state.name,
 			email: this.state.email,
@@ -42,20 +50,22 @@ class Login extends React.Component {
 		};
 
 		const response = firebaseRD.login(user, this.loginSucesso, this.loginFalha);
+		// console.log(response);
 	};
 
-	loginSucesso = () => {
+	loginSucesso = async () => {
+		// this.state.avatar = await firebaseRD.getAvatar;
+		// console.log('--------LOGIN-------------');
+		// console.log(this.state);
+		var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+		const avatar = await ref.getDownloadURL();
+
 		this.props.navigation.navigate("Salas", {
 			name: this.state.name,
 			email: this.state.email,
-			avatar: this.state.avatar,
+			avatar: avatar,
+			user: this.state
 		});
-
-		// this.props.navigation.navigate("Chat", {
-		// 	name: this.state.name,
-		// 	email: this.state.email,
-		// 	avatar: this.state.avatar,
-		// });
 	};
 
 	loginFalha = () => {
@@ -69,14 +79,15 @@ class Login extends React.Component {
 	    );
 	};
 
-	logout = () => {
-		console.log('LOGOUT 1');
-		const user = {
-			name: this.state.name,
-			email: this.state.email,
-			password: this.state.password,
-			avatar: this.state.avatar,
-		};
+	logout = (user) => {
+	// static logout ) {
+		console.log(user);
+		// const user = {
+		// 	name: this.state.name,
+		// 	email: this.state.email,
+		// 	password: this.state.password,
+		// 	avatar: this.state.avatar,
+		// };
 
 		const response = firebaseRD.logout(
 			user,
@@ -86,6 +97,7 @@ class Login extends React.Component {
 	};
 
 	logoutSucesso = () => {
+		console.log('logoutSucesso');
 		this.props.navigation.navigate("Login");
 	};
 

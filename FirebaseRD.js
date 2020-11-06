@@ -186,7 +186,7 @@ class FirebaseRD {
 	};
 
 	
-	logout = (user) => {
+	logout = async (user, success_callback, failed_callback) => {
 		firebase
 			.auth()
 			.signOut()
@@ -207,15 +207,16 @@ class FirebaseRD {
 	}
 
 	parse = (snapshot) => {
-		const { timestamp: numberStamp, text, user } = snapshot.val();
+		// console.log(snapshot.val());
+		const { createdAt, text, user } = snapshot.val();
 		const { key: id } = snapshot;
 		const { key: _id } = snapshot; //needed for giftedchat
-		const timestamp = new Date(numberStamp);
-
+		
 		const message = {
 			id,
 			_id,
-			timestamp,
+			// timestamp,
+			createdAt,
 			text,
 			user,
 		};
@@ -223,9 +224,7 @@ class FirebaseRD {
 		return message;
 	};
 
-	refOn = (sala, callback) => {
-		console.log('sala');
-		console.log(sala);
+	refOn = async (sala, callback) => {
 		this.ref(sala)
 			.limitToLast(100)
 			.on("child_added", (snapshot) => callback(this.parse(snapshot)));
@@ -238,11 +237,10 @@ class FirebaseRD {
 	enviarMsg = (messages) => {
 		for (let i = 0; i < messages.length; i++) {
 			const { text, user, salaKey } = messages[i];
-			console.log(user.salaKey);
 			const message = {
-				
 				text,
 				user,
+				// createdAt: new Date()
 				createdAt: this.timestamp,
 			};
 			// firebase.database().ref('Messages/${user.salaKey}').push(message);

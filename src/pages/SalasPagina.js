@@ -1,10 +1,10 @@
 import React from "react";
 import {
 	View,
-	FlatList,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
-import { List, Divider } from 'react-native-paper';
-
+import { IconButton, List, Divider } from 'react-native-paper';
 import styles from "../styles/SalasPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
 
@@ -19,6 +19,8 @@ class SalasPagina extends React.Component {
       image: this.props.navigation.state.params.email,
       salas: [],
     };
+		
+    // console.log('--------SALAS PAGINA-------------');
   }
   
   componentDidMount() {
@@ -46,11 +48,9 @@ class SalasPagina extends React.Component {
 		firebaseRD.refSalasOff();
 	}
 
-   render() {
+  render() {
     // const { salas, currentSala, currentIndex } = this.state;
-
     return (
-        
       <View style={styles.container}>
         <FlatList
           data={this.state.salas}
@@ -64,45 +64,23 @@ class SalasPagina extends React.Component {
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}
               descriptionNumberOfLines={1}
-               onPress={() => this.props.navigation.navigate("Chat", {
-                                                                                        name: this.state.name,
-                                                                                        email: this.state.email,
-                                                                                        avatar: this.state.avatar,
-                                                                                        salaKey: item.key,
-                                                                                        salaNome: item.nome
-                                                                                      })}
+              onPress={() => this.props.navigation.navigate("Chat", {
+                                                                      name: this.state.name,
+                                                                      email: this.state.email,
+                                                                      avatar: this.state.avatar,
+                                                                      salaKey: item.key,
+                                                                      salaNome: item.nome
+                                                                    })}
             />
           )}
         />
+        
+        <TouchableOpacity style={styles.floatButton}>
+          <IconButton icon='message-plus' size={32} color='#fff' onPress={() => this.props.navigation.navigate('AddSala')} />
+        </TouchableOpacity>
       </View>
-     
-    //  <View style={styles.container}>
-	  //     <ScrollView style={styles.container}>
-		// 				<View style={styles.logoView}></View>
-            
-    //         {this.state.salas &&
-    //           this.state.salas.map((sala, index) => (
-                
-    //             <Text
-    //               key={index} onPress={() => this.props.navigation.navigate("Chat", {
-    //                                                                                     name: this.state.name,
-    //                                                                                     email: this.state.email,
-    //                                                                                     avatar: this.state.avatar,
-    //                                                                                     salaKey: sala.key,
-    //                                                                                     salaNome: sala.nome
-    //                                                                                   })}
-    //             >
-    //               {sala.nome}
-    //             </Text>
-    //           ))}
-            
-
-          
-    //     </ScrollView>
-    //     </View>
     );
   }
-
 }
 
 export default SalasPagina;

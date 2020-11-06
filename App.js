@@ -16,11 +16,12 @@ const AppStack = createStackNavigator(
 			screen: Salas,
 			navigationOptions: ({ navigate, navigation }) => ({
 				title: "Salas",
-				headerRight: (
-					<TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
-						<IconButton icon='message-plus' size={32} color='white' />
+				headerRight: () =>
+					// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
+					<TouchableOpacity onPress={() => Login.logout(navigation.getParam('user'))}>
+						<IconButton icon='logout' size={32} color='white' />
 					</TouchableOpacity>
-				),
+				,
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
@@ -32,11 +33,11 @@ const AppStack = createStackNavigator(
 			navigationOptions: ({ navigate, navigation }) => ({
 				title: navigation.getParam('salaNome'),
 				
-				headerRight: (
-					<TouchableOpacity onPress={() => firebaseRD.logout()}>
+				headerRight: () =>
+					<TouchableOpacity onPress={() => Login.logout}>
 						<IconButton icon='logout' size={32} color='white' />
 					</TouchableOpacity>
-				),
+				,
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,
