@@ -17,28 +17,63 @@ export default StyleSheet.create({
       backgroundColor:'#005cc5',
       borderRadius:100,
     },
-
-	 loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  sendingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  bottomComponentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  systemMessageWrapper: {
-    backgroundColor: '#6646ee',
-    borderRadius: 4,
-    padding: 5
-  },
-  systemMessageText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold'
-  }
+    item: {
+      flexDirection: 'row',
+      borderBottomWidth: 1,
+      borderBottomColor: 'grey',
+      alignItems: 'center',
+    },
+    text: {
+      marginVertical: 30,
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginLeft: 10,    
+    },
+    // MODAL
+    modalView: {
+      flex: 1,
+      backgroundColor: "#88cbf0",
+      margin: 10,
+      borderRadius: 5,
+      paddingBottom: 30,
+    },
+    modalContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    input: {
+      height: 48,
+      borderRadius: 5,
+      overflow: "hidden",
+      backgroundColor: "white",
+      marginTop: 20,
+      marginBottom: 10,
+      marginLeft: 30,
+      marginRight: 30,
+      paddingLeft: 16,
+    },
+    button: {
+      backgroundColor: "#005cc5",
+      marginLeft: 30,
+      marginRight: 30,
+      marginTop: 20,
+      height: 48,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonTitle: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    footerView: {
+      flex: 1,
+      alignItems: "center",
+      marginTop: 20,
+    },
+    footerText: {
+      fontSize: 16,
+      color: "#2e2e2d",
+    },
 });

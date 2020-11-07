@@ -78,7 +78,8 @@ class AddSalaPagina extends React.Component {
                 onChangeText={this.onChangeTextDescricao}
                 value={this.state.descricao}
                 underlineColorAndroid="transparent"
-                autoCapitalize="words"
+                multiline = {true}
+                autoCapitalize="sentences"
                 ref={this.descricaoTextInputRef}
               />
 

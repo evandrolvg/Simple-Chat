@@ -69,24 +69,41 @@ class Chat extends React.Component {
 	}
 
 	renderBubble(props) {
-    return (
-      // Step 3: return the component
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          right: {
-            // Here is the color change
-            backgroundColor: 'blue'
-          }
-        }}
-        textStyle={{
-          right: {
-            color: '#fff'
-          }
-        }}
-      />
-    );
-  }
+		return (
+		// Step 3: return the component
+		<Bubble
+			{...props}
+			wrapperStyle={{
+			right: {
+				// Here is the color change
+				backgroundColor: 'blue'
+			}
+			}}
+			textStyle={{
+			right: {
+				color: '#fff'
+			}
+			}}
+		/>
+		);
+	}
+	scrollToBottomComponent() {
+		return (
+		<View style={styles.bottomComponentContainer}>
+			<IconButton icon='chevron-double-down' size={36} color='#6646ee' />
+		</View>
+		);
+	}
+
+   	renderSystemMessage(props) {
+		return (
+			<SystemMessage
+				{...props}
+				wrapperStyle={styles.systemMessageWrapper}
+				textStyle={styles.systemMessageText}
+			/>
+		);
+	}
 	  
 	render() {
 		// const rightButtonConfig = {
@@ -104,15 +121,19 @@ class Chat extends React.Component {
 					renderLoading={this.renderLoading}
 					// renderBubble={this.renderBubble}
 					placeholder="Escreva sua mensagem..."
-					// 	renderBubble={(props) => {
-					// 		const color = props.currentMessage.read ? "#0084ff" : "#389bff";
-					// 		return (
-					// 			<Bubble
-					// 				{...props}
-					// 				wrapperStyle={{ right: { backgroundColor: color } }}
-					// 			/>
-					// 		);
-					// 	}}
+					showUserAvatar
+					scrollToBottomComponent={this.scrollToBottomComponent}
+      				renderSystemMessage={this.renderSystemMessage}
+					scrollToBottom
+					renderBubble={(props) => {
+						const color = props.currentMessage.read ? "#0084ff" : "#389bff";
+						return (
+							<Bubble
+								{...props}
+								wrapperStyle={{ right: { backgroundColor: color } }}
+							/>
+						);
+					}}
 				/>
 			</View>
 		);
@@ -135,6 +156,7 @@ class Chat extends React.Component {
 			}))
 		);
 	}
+
 	componentWillUnmount() {
 		firebaseRD.refOff(this.user.salaKey);
 	}

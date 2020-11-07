@@ -141,6 +141,12 @@ class FirebaseRD {
         // });
 	};
 
+	editaSala(item){
+		firebase.database()
+  			.ref('Salas/' + item.key).update({nome: item.nome, descricao: item.descricao});
+    	
+	}
+
 	uploadImage = async (uri) => {
 		console.log("Imagem upload. URI:" + uri);
 		try {
