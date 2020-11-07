@@ -9,6 +9,7 @@ import {
   TouchableHighlight
 } from "react-native";
 import { IconButton, List, Divider } from 'react-native-paper';
+import { useNavigation } from 'react-navigation';
 import styles from "../styles/SalasPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
 
@@ -33,6 +34,10 @@ class SalasPagina extends React.Component {
     // console.log('--------SALAS PAGINA-------------');
   }
 
+  
+
+
+  
    setModalVisible = (bool) => {
         this.setState({ isModalVisible: bool })
     }
@@ -65,6 +70,15 @@ class SalasPagina extends React.Component {
   
   componentDidMount() {
     this.listenSalas(firebaseRD.refSalas);
+    //  useNavigation().setOptions({
+    //   headerRight: () => this.setHeaderRight(),
+    // });
+    // this.props.navigation.setParams({title: 'teste' });
+    // this.props.navigation.setParams({
+    //   headerRight: this.setHeaderRight()
+    // });
+
+    // this.props.navigation.setOptions({ title: 'Updated!' });
   }
 
   listenSalas(tasksRef) {
@@ -83,6 +97,50 @@ class SalasPagina extends React.Component {
       });
     });
   }
+
+  setHeaderRight = () => {
+    //console.log("setHeaderRight", this.state.secureTextEntry);
+    return (
+     		
+					<TouchableOpacity onPress={() => this.logout()}>
+						<IconButton icon='logout' size={32} color='white' />
+					</TouchableOpacity>
+    );
+  };
+  
+
+  logout = (user) => {
+	// static logout ) {
+		console.log(user);
+		// const user = {
+		// 	name: this.state.name,
+		// 	email: this.state.email,
+		// 	password: this.state.password,
+		// 	avatar: this.state.avatar,
+		// };
+
+		const response = firebaseRD.logout(
+			user,
+			this.logoutSucesso,
+			this.logoutFalha
+		);
+	};
+
+	logoutSucesso = () => {
+		console.log('logoutSucesso');
+		this.props.navigation.navigate("Login");
+	};
+
+	logoutFalha = () => {
+		Alert.alert(
+      		"Erro ao deslogar",
+      		"Tente novamente.",
+      		[
+				{ text: "OK", onPress: () => console.log("OK Pressed") }
+			],
+			{ cancelable: false }
+	    );	
+	};
   
   componentWillUnmount() {
 		firebaseRD.refSalasOff();
@@ -167,6 +225,8 @@ class SalasPagina extends React.Component {
               <TouchableOpacity style={styles.floatButton}>
                 <IconButton icon='message-plus' size={32} color='#fff' onPress={() => this.props.navigation.navigate('AddSala')} />
               </TouchableOpacity>
+
+              <IconButton icon='message-plus' size={32} color='#fff' onPress={() => this.logout()} />
             </View>
         )
     }

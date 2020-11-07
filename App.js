@@ -4,7 +4,7 @@ import { IconButton } from "react-native-paper";
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import firebaseRD from "./FirebaseRD";
-import Login from "./src/pages/LoginPage";
+import Login, {logout} from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
 import Chat from "./src/pages/ChatPage";
 import AddSala from "./src/pages/AddSalaPagina";
@@ -17,8 +17,8 @@ const AppStack = createStackNavigator(
 			navigationOptions: ({ navigate, navigation }) => ({
 				title: "Salas",
 				headerRight: () =>
-					// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
-					<TouchableOpacity onPress={() => Login.logout(navigation.getParam('user'))}>
+				// 	// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
+					<TouchableOpacity onPress={() => Login.logout()}>
 						<IconButton icon='logout' size={32} color='white' />
 					</TouchableOpacity>
 				,

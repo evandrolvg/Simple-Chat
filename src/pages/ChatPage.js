@@ -25,7 +25,7 @@ import time from "../../Timer";
 class Chat extends React.Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
-			title: navigation.getParam('salaNome', 'A Nested Details Screen'),
+			title: navigation.getParam('salaNome'),
 		};
 	};
 	
@@ -150,7 +150,7 @@ class Chat extends React.Component {
 		// console.log(this.user);
 		// console.log('---------------------');
 		
-		firebaseRD.refOn(this.user.salaKey, (message) =>
+		firebaseRD.refOnMensagens(this.user.salaKey, (message) =>
 			this.setState((previousState) => ({
 				messages: GiftedChat.append(previousState.messages, message),
 			}))
@@ -158,7 +158,7 @@ class Chat extends React.Component {
 	}
 
 	componentWillUnmount() {
-		firebaseRD.refOff(this.user.salaKey);
+		firebaseRD.refOffMensagens(this.user.salaKey);
 	}
 }
 

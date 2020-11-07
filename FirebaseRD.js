@@ -19,7 +19,8 @@ class FirebaseRD {
 			firebase.initializeApp(config);
 		}
 	}
-
+	
+	// ------------- LOGIN -------------
 	login = async (user, success_callback, failed_callback) => {
 		const output = await firebase
 			.auth()
@@ -27,20 +28,46 @@ class FirebaseRD {
 			.then(success_callback, failed_callback);
 	};
 
-	//se logado antes
-	observeAuth = () =>
-		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
-
-	onAuthStateChanged = (user) => {
-		if (!user) {
-			try {
-				this.login(user);
-			} catch ({ message }) {
-				console.log("Failed:" + message);
-			}
-		}
+	logout = async (success_callback, failed_callback) => {
+		firebase
+			.auth()
+			.signOut()
+			.then(success_callback, failed_callback);
 	};
 
+	get uid() {
+		return (firebase.auth().currentUser || {}).uid;
+	}
+
+	get currentUser() {
+		return (firebase.auth().currentUser || {});
+	}
+
+	
+
+	getMsgByErrorCode(errorCode) {
+		switch (errorCode) {
+			case "auth/wrong-password":
+				return "Senha incorreta!";
+			case "auth/invalid-email":
+				return "E-mail inválido!";
+			case "auth/user-not-found":
+				return "Usuário não encontrado!";
+			case "auth/user-disabled":
+				return "Usuário desativado!";
+			case "auth/email-already-in-use":
+				return "Usuário já está em uso!";
+			case "auth/operation-not-allowed":
+				return "Operação não permitida!";
+			case "auth/weak-password":
+				return "Senha muito fraca!";
+			default:
+				return "Erro desconhecido!";
+		}
+	}
+	// ------------- FIM LOGIN -------------
+
+	// ------------- REGISTRO USUÁRIO -------------
 	registro = async (user) => {
 		firebase
 			.auth()
@@ -75,77 +102,6 @@ class FirebaseRD {
 				);
 			})
 	};
-
-	get refSalas() {
-		return firebase.database().ref("Salas");
-	}
-
-	parseSala = (snapshot) => {
-		const { key: id } = snapshot;
-		const { key: _id } = snapshot; //needed for giftedchat
-
-		const sala = {
-			id,
-			_id,
-			nome
-		};
-		console.log("SALA: " + sala);
-		return sala;
-	};
-
-	getSalas = (callback) => {
-		this.refSalas
-			.limitToLast(100)
-			.on("child_added", (snapshot) => callback(this.parseSala(snapshot)));
-	};
-
-	refSalasOff() {
-		this.refSalas.off();
-	}
-
-	criarSala = (salaNome, salaDescricao) => {
-		console.log(salaNome);
-		const newReference = firebase.database()
-  			.ref('/Salas')
-  			.push();
-
-		console.log('Auto generated key: ', newReference.key);
-		newReference
-		.set({
-				nome: salaNome,
-				descricao: salaDescricao,
-				// latestMessage: {
-				// 	text: `You have joined the room ${salaNome}.`,
-				// 	createdAt: new Date().getTime()
-				// }
-		})
-		.then(() => console.log('Sala criada.'));
-
-
-		// firebase.firestore()
-        // .collection('THREADS')
-        // .add({
-        //   name: salaNome,
-        //   latestMessage: {
-        //     text: `You have joined the room ${salaNome}.`,
-        //     createdAt: new Date().getTime()
-        //   }
-        // })
-        // .then(docRef => {
-        //   docRef.collection('MESSAGES').add({
-        //     text: `You have joined the room ${salaNome}.`,
-        //     createdAt: new Date().getTime(),
-        //     system: true
-        //   });
-        //   navigation.navigate('Home');
-        // });
-	};
-
-	editaSala(item){
-		firebase.database()
-  			.ref('Salas/' + item.key).update({nome: item.nome, descricao: item.descricao});
-    	
-	}
 
 	uploadImage = async (uri) => {
 		console.log("Imagem upload. URI:" + uri);
@@ -190,29 +146,68 @@ class FirebaseRD {
 			);
 		}
 	};
+	// ------------- FIM REGISTRO USUÁRIO -------------
 
-	
-	logout = async (user, success_callback, failed_callback) => {
-		firebase
-			.auth()
-			.signOut()
-			.then(success_callback, failed_callback);
+	// ------------- SALAS -------------
+	get refSalas() {
+		return firebase.database().ref("Salas");
+	}
+
+	parseSala = (snapshot) => {
+		const { key: id } = snapshot;
+		const { key: _id } = snapshot; //needed for giftedchat
+
+		const sala = {
+			id,
+			_id,
+			nome
+		};
+		console.log("SALA: " + sala);
+		return sala;
 	};
 
-	get uid() {
-		return (firebase.auth().currentUser || {}).uid;
+	getSalas = (callback) => {
+		this.refSalas
+			.limitToLast(100)
+			.on("child_added", (snapshot) => callback(this.parseSala(snapshot)));
+	};
+
+	refSalasOff() {
+		this.refSalas.off();
 	}
 
-	get currentUser() {
-		return (firebase.auth().currentUser || {});
-	}
+	criarSala = (salaNome, salaDescricao) => {
+		console.log(salaNome);
+		const newReference = firebase.database()
+  			.ref('/Salas')
+  			.push();
 
-	ref(sala) {
-		
+		console.log('Auto generated key: ', newReference.key);
+		newReference
+		.set({
+				nome: salaNome,
+				descricao: salaDescricao,
+				// latestMessage: {
+				// 	text: `You have joined the room ${salaNome}.`,
+				// 	createdAt: new Date().getTime()
+				// }
+		})
+		.then(() => console.log('Sala criada.'));
+	};
+
+	editaSala(item){
+		firebase.database()
+  			.ref('Salas/' + item.key).update({nome: item.nome, descricao: item.descricao});
+    	
+	}
+	// ------------- FIM SALAS -------------
+
+	// ------------- MENSAGENS -------------
+	refMensagens(sala) {
 		return firebase.database().ref(`Messages/${sala}`);
 	}
 
-	parse = (snapshot) => {
+	parseMensagens = (snapshot) => {
 		// console.log(snapshot.val());
 		const { createdAt, text, user } = snapshot.val();
 		const { key: id } = snapshot;
@@ -230,10 +225,10 @@ class FirebaseRD {
 		return message;
 	};
 
-	refOn = async (sala, callback) => {
-		this.ref(sala)
+	refOnMensagens = async (sala, callback) => {
+		this.refMensagens(sala)
 			.limitToLast(100)
-			.on("child_added", (snapshot) => callback(this.parse(snapshot)));
+			.on("child_added", (snapshot) => callback(this.parseMensagens(snapshot)));
 	};
 
 	get timestamp() {
@@ -249,37 +244,16 @@ class FirebaseRD {
 				// createdAt: new Date()
 				createdAt: this.timestamp,
 			};
-			// firebase.database().ref('Messages/${user.salaKey}').push(message);
+			
 			firebase.database().ref(`Messages/${user.salaKey}`).push(message);
-
-			// this.ref.push(message);
 		}
 	};
 
-	refOff(sala) {
-		this.ref(sala).off();
+	refOffMensagens(sala) {
+		this.refMensagens(sala).off();
 	}
-
-	getMsgByErrorCode(errorCode) {
-		switch (errorCode) {
-			case "auth/wrong-password":
-				return "Senha incorreta!";
-			case "auth/invalid-email":
-				return "E-mail inválido!";
-			case "auth/user-not-found":
-				return "Usuário não encontrado!";
-			case "auth/user-disabled":
-				return "Usuário desativado!";
-			case "auth/email-already-in-use":
-				return "Usuário já está em uso!";
-			case "auth/operation-not-allowed":
-				return "Operação não permitida!";
-			case "auth/weak-password":
-				return "Senha muito fraca!";
-			default:
-				return "Erro desconhecido!";
-		}
-	}
+	// ------------- FIM MENSAGENS -------------
+	
 }
 
 const firebaseRD = new FirebaseRD();

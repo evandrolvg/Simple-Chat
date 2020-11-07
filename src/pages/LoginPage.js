@@ -20,10 +20,18 @@ import firebase from "firebase";
 import { auth, initializeApp, storage } from "firebase";
 import uuid from "uuid";
 
+export function logout () {
+	const response = firebaseRD.logout(
+		this.logoutSucesso,
+		this.logoutFalha
+	);
+  }
+
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.passwordTextInputRef = React.createRef();
+		this.observeAuth();
 	} 
 
 	state = {
@@ -40,8 +48,18 @@ class Login extends React.Component {
 	// 	avatar: "",
 	// };
 
+	//se logado antes
+	observeAuth = () =>
+		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
+	
+	onAuthStateChanged = (user) => {
+		console.log(user);
+		if (user) {
+			this.loginSucesso();
+		}
+	};
+
 	logar = async () => {
-		
 		const user = {
 			name: this.state.name,
 			email: this.state.email,
@@ -50,13 +68,9 @@ class Login extends React.Component {
 		};
 
 		const response = firebaseRD.login(user, this.loginSucesso, this.loginFalha);
-		// console.log(response);
 	};
 
 	loginSucesso = async () => {
-		// this.state.avatar = await firebaseRD.getAvatar;
-		// console.log('--------LOGIN-------------');
-		// console.log(this.state);
 		var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
 		const avatar = await ref.getDownloadURL();
 
