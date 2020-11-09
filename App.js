@@ -4,7 +4,7 @@ import { IconButton } from "react-native-paper";
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import firebaseRD from "./FirebaseRD";
-import Login, {logout} from "./src/pages/LoginPage";
+import Login from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
 import Chat from "./src/pages/ChatPage";
 import AddSala from "./src/pages/AddSalaPagina";
@@ -17,11 +17,18 @@ const AppStack = createStackNavigator(
 			navigationOptions: ({ navigate, navigation }) => ({
 				title: "Salas",
 				headerRight: () =>
-				// 	// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
-					<TouchableOpacity onPress={() => Login.logout()}>
+				<TouchableOpacity onPress={() => Login.logout}>
 						<IconButton icon='logout' size={32} color='white' />
-					</TouchableOpacity>
-				,
+					</TouchableOpacity>,
+				// <Demo/>,
+				// <ModalDropdown  defaultValue = {navigation.state.params.name} options={['English', 'Hebrew']} />,
+				// textStyle={styles.dropDownTextBtn} dropdownTextStyle={styles.dropDownTextBtn}
+				// 	// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
+					// <TouchableOpacity >
+						// <IconButton icon='logout' size={32} color='white' onPress={() => <MyComponent/>} />,
+						
+					// </TouchableOpacity>,
+				// headerRight: () => ,
 				headerTitleStyle: {
 					textAlign: "left",
 					fontSize: 20,

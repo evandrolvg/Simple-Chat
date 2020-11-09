@@ -20,12 +20,7 @@ import firebase from "firebase";
 import { auth, initializeApp, storage } from "firebase";
 import uuid from "uuid";
 
-export function logout () {
-	const response = firebaseRD.logout(
-		this.logoutSucesso,
-		this.logoutFalha
-	);
-  }
+
 
 class Login extends React.Component {
 	constructor(props) {
@@ -128,6 +123,10 @@ class Login extends React.Component {
 
 	onChangeTextEmail = (email) => this.setState({ email });
 	onChangeTextPassword = (password) => this.setState({ password });
+
+	componentDidMount() {
+		this.props.navigation.setParams({onPressAction: ()=>this.logout()})
+	}
 
 	render() {
 		return (
