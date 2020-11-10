@@ -6,18 +6,21 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  Icon,
+  Button,
   TouchableHighlight,
   SafeAreaView,
   Image,
 } from "react-native";
-import { IconButton, List, Divider } from 'react-native-paper';
+import { IconButton, List, Divider, Avatar } from 'react-native-paper';
 import styles from "../styles/SalasPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 class SalasPagina extends React.Component {
 	constructor(props) {
     super(props);
-    this.initData = [];
+    this.iniData = [];
     this.descricaoTextInputRef = React.createRef();
 
     this.state = {
@@ -25,55 +28,51 @@ class SalasPagina extends React.Component {
       email: this.props.navigation.state.params.email,
       avatar: this.props.navigation.state.params.avatar,
       image: this.props.navigation.state.params.email,
-      salas: this.initData,
-      isModalVisible: false,
+      salas: this.iniData,
+      modalVisivel: false,
       inputTextSalaNome: '',
       inputTextSalaDescricao: '',
-      editedItem: 0, 
-      isMenuVisible: false,
+      itemEdita: 0, 
+      menuVisivel: false,
     };
   }
   
-  setModalVisible = (bool) => {
-      this.setState({ isModalVisible: bool })
+  modalVisivel = (bool) => {
+    this.setState({ modalVisivel: bool })
   }
 
-  setInputText = (salaNome, salaDescricao) => {
-      this.setState({ 
-                      inputTextSalaNome: salaNome,
-                      inputTextSalaDescricao: salaDescricao,
-        })
+  setInputTexto = (salaNome, salaDescricao) => {
+    this.setState({ 
+                  inputTextSalaNome: salaNome,
+                  inputTextSalaDescricao: salaDescricao,
+    })
   }
 
-  setEditedItem = (key) => {
-      this.setState({ editedItem: key })
+  setItemEdita = (key) => {
+    this.setState({ itemEdita: key })
   }
 
-  editar = (editedItem) => {
-      const newData = this.state.salas.map( item => {
-          if (item.key === editedItem ) {
-              item.nome = this.state.inputTextSalaNome;
-              item.descricao = this.state.inputTextSalaDescricao;
-              // firebaseRD.editaSala(this.state.inputTextSalaNome,this.state.inputTextSalaDescricao);
-              firebaseRD.editaSala(item);
-              return item;
-          }
-          return item;
-      })
+  editar = (itemEdita) => {
+    const novoDado = this.state.salas.map( item => {
+        if (item.key === itemEdita ) {
+            item.nome = this.state.inputTextSalaNome;
+            item.descricao = this.state.inputTextSalaDescricao;
+            // firebaseRD.editaSala(this.state.inputTextSalaNome,this.state.inputTextSalaDescricao);
+            firebaseRD.editaSala(item);
+            return item;
+        }
+        return item;
+    })
 
-      this.setState({ salas: newData });
+    this.setState({ salas: novoDado });
   }
 
-  setMenuVisible = (bool) => {
-      this.setState({ isMenuVisible: bool })
+  menuVisivel = (bool) => {
+    this.setState({ menuVisivel: bool })
   }
   
   componentDidMount() {
     this.listenSalas(firebaseRD.refSalas);
-    // this.props.navigation.setParams({onPressAction: ()=>this.logout()})
-    this.props.navigation.setParams({
-            headerRight: (<TouchableOpacity onPress={this.logout}></TouchableOpacity>)
-     })
   }
 
   listenSalas(refSalas) {
@@ -93,9 +92,8 @@ class SalasPagina extends React.Component {
     });
   }
 
-  logout = (user) => {
+  logout = () => {
 		const response = firebaseRD.logout(
-			user,
 			this.logoutSucesso,
 			this.logoutFalha
 		);
@@ -121,22 +119,31 @@ class SalasPagina extends React.Component {
 		firebaseRD.refSalasOff();
   }
   
-  renderItem = ({item}) => (
-        <View style={styles.item}>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat", {
-                                                                    name: this.state.name,
-                                                                    email: this.state.email,
-                                                                    avatar: this.state.avatar,
-                                                                    salaKey: item.key,
-                                                                    salaNome: item.nome
+  renderSala = ({item}) => (
+    <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat", {
+      name: this.state.name,
+      email: this.state.email,
+      avatar: this.state.avatar,
+      salaKey: item.key,
+      salaNome: item.nome
                                                                   })}>
-            <Text style={styles.text}> {item.nome} </Text>
-            <Text style={styles.text}> {item.descricao} </Text>
-            
-            <IconButton icon='message-plus' size={32} color='#fff' onPress={() => {this.setModalVisible(true); this.setInputText(item.nome, item.descricao), this.setEditedItem(item.key)}} />
-            
-          </TouchableOpacity>                          
-        </View>
+
+        <Grid>
+          <Col size={80}>
+              <Row>
+                  <Text style={styles.text}> {item.nome} </Text>
+              </Row>
+              <Row>
+                  <Text style={styles.text}> {item.descricao} </Text>
+              </Row>
+          </Col>
+          <Col size={20} style={styles.btnEdit}>
+            <IconButton icon='square-edit-outline' size={32} color='#b9babb' onPress={() => {this.modalVisivel(true); this.setInputTexto(item.nome, item.descricao), this.setItemEdita(item.key)}} />
+          </Col>
+        </Grid>
+        <Divider />
+      </TouchableOpacity>
+    
     )
     
     render() {
@@ -145,10 +152,10 @@ class SalasPagina extends React.Component {
               <FlatList 
                   data={this.state.salas}
                   keyExtractor={(item) => item.key.toString()}
-                  renderItem={this.renderItem}
+                  renderItem={this.renderSala}
               />
-                <Modal transparent={true}  animationType="fade" visible={this.state.isModalVisible} 
-                  onRequestClose={() => this.setModalVisible(false)} style={styles.modalContainer}>
+                <Modal transparent={true}  animationType="fade" visible={this.state.modalVisivel} 
+                  onRequestClose={() => this.modalVisivel(false)} style={styles.modalContainer}>
                   <View style={styles.modalView}>
                       <View style={styles.footerView}>
                         <Text style={styles.footerText}>
@@ -156,6 +163,11 @@ class SalasPagina extends React.Component {
                             Informe os dados da nova sala
                           </Text>
                         </Text>
+                      </View>
+                      <View style={styles.menuContView}>
+                        
+                          <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgEdit} />
+                        
                       </View>
 
                       <TextInput
@@ -191,36 +203,62 @@ class SalasPagina extends React.Component {
                         ref={this.descricaoTextInputRef}
                       />
 
-                      <TouchableOpacity style={styles.button} onPress={() => {this.editar(this.state.editedItem); this.setModalVisible(false)}} >
+                      <TouchableOpacity style={styles.button} onPress={() => {this.editar(this.state.itemEdita); this.modalVisivel(false)}} >
                         <Text style={styles.buttonTitle}>Confirmar</Text>
                       </TouchableOpacity>
                     </View>           
                 </Modal> 
 
-                <Modal transparent={true}  animationType="fade" visible={this.state.isMenuVisible} 
-                  onRequestClose={() => this.setMenuVisible(false)} style={styles.modalContainer}>
-                  <View style={styles.modalView}>
-                      <View style={styles.footerView}>
-                        <Text style={styles.footerText}>
-                          <Text>
-                            MENU
-                          </Text>
-                        </Text>
-                      </View>
-
-                      <IconButton icon='message-plus' size={32} color='#fff' onPress={() => this.props.navigation.navigate('AddSala')} />
-
-                      <TouchableOpacity style={styles.button} onPress={() => {this.setMenuVisible(false)}} >
+                <Modal transparent={true}  animationType="fade" visible={this.state.menuVisivel} 
+                  onRequestClose={() => this.menuVisivel(false)} style={styles.modalContainer}>
+                  <View style={styles.menuView}>
+                      <TouchableOpacity style={styles.buttonClose} onPress={() => {this.menuVisivel(false)}} >
                         <Text style={styles.buttonTitle}>X</Text>
                       </TouchableOpacity>
+                      
+                      <View style={styles.menuContView}>
+                        <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate('AddSala')}}>
+                          <Grid>
+                              <Col size={40} style={styles.btnMenu}>
+                                <Row>
+                                  <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgBtnMenu} />
+                                </Row>
+                              </Col>
+                              <Col size={60} style={styles.btnMenu}>
+                                <Row>
+                                  <Text>Adicionar sala</Text>
+                                </Row>
+                              </Col>
+                            </Grid>
+                        </TouchableOpacity>
+                      </View>
+
+                      <View style={styles.menuContView, styles.borderBottom}>
+                        
+                      </View>                                      
+                      <View style={styles.menuContView}>
+                        <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate('Registro')}}>
+                          <Grid>
+                              <Col size={40} style={styles.btnMenu}>
+                                <Image source={require('../img/user.png')} resizeMode='contain' style={styles.imgBtnMenu} />
+                              </Col>
+                              <Col size={60} style={styles.btnMenu}>
+                                  <Text>Meu perfil</Text>
+                              </Col>
+                            </Grid>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.menuContView}>
+                        <TouchableOpacity style={styles.buttonLogout} onPress={() => {this.menuVisivel(false); this.logout()}} >
+                          <Image source={require('../img/logout.png')} resizeMode='contain' style={styles.imgBtnMenu} />
+                        </TouchableOpacity>
+                      </View>
                     </View>           
                 </Modal> 
-              <TouchableOpacity  activeOpacity={0.7} style={styles.floatButton}>
-                
-                
-                <IconButton icon='dots-vertical' size={32} color='#fff' onPress={() => {this.setMenuVisible(true)}} />
-              </TouchableOpacity>
-              {/* <IconButton icon='message-plus' size={32} color='#fff' onPress={() => this.logout()} /> */}
+              
+                <TouchableOpacity  activeOpacity={0.7} style={styles.floatButton}>
+                  <IconButton icon='dots-vertical' size={32} color='#fff' onPress={() => {this.menuVisivel(true)}} />
+                </TouchableOpacity>
             </View>
         )
     }
