@@ -39,55 +39,30 @@ export default StyleSheet.create({
     mtop: {
       marginTop: 20,
     },
-
     btnMenu: {
       marginLeft: 0,
       marginRight: 0,
-      // marginTop: 50,
-      // height: 48,
-      
-      // borderRadius: 5,
       flexDirection:'row',
-      // flex: 1,
       backgroundColor: "white",
       alignItems: "center",
       justifyContent: "space-between",
-      // flexWrap: 'wrap', 
-        
-        
-      //  alignItems:'center',
-      //  justifyContent:'center'
     },
     imgBtnMenu : {
-      // marginLeft: 20,
-      // marginRight: 20,
-      // // marginTop: 20,
       height: 35,
-      
-      // // borderRadius: 5,
-      // // flexDirection:'row',
-     flex: 1,
-      // backgroundColor: "white",
-      // alignItems: "center",
-      // justifyContent: "center",
+      flex: 1,
     },
     txtBtnMenu : {
       flex:.8
     },
-    
     buttonLogout: {
-      flex: 1, flexDirection: 'row',
-      // borderWidth:1,
-      // borderColor:'red',
+      flex: 1, 
+      flexDirection: 'row',
       alignItems:'center',
       justifyContent:'center',
       width:70,
-      // right: -20,
       position: 'absolute',                                          
       bottom: 0,                  
       height:70,
-      // backgroundColor:'red',
-      // borderRadius:100,
       zIndex:99,
     },
     buttonClose: {
@@ -128,16 +103,25 @@ export default StyleSheet.create({
       alignItems: 'center',
     },
     btnEdit:{
-       width: '100%',
+      width: '100%',
       height: '100%',
       justifyContent: 'center',
       alignItems: 'center'
     },
-    text: {
+    textTitle: {
+      marginVertical: 10,
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginLeft: 10,    
+    },
+    textSub: {
       marginVertical: 10,
       fontSize: 15,
       // fontWeight: 'bold',
       marginLeft: 10,    
+    },
+    imgSala: {
+      height:60,
     },
     // MODAL
     modalView: {
@@ -164,6 +148,16 @@ export default StyleSheet.create({
     },
     button: {
       backgroundColor: "#005cc5",
+      marginLeft: 30,
+      marginRight: 30,
+      marginTop: 20,
+      height: 48,
+      borderRadius: 5,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonCancel: {
+      backgroundColor: "red",
       marginLeft: 30,
       marginRight: 30,
       marginTop: 20,

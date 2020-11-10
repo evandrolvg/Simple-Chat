@@ -43,8 +43,6 @@ class FirebaseRD {
 		return (firebase.auth().currentUser || {});
 	}
 
-	
-
 	getMsgByErrorCode(errorCode) {
 		switch (errorCode) {
 			case "auth/wrong-password":

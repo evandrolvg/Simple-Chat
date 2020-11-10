@@ -48,8 +48,9 @@ class Login extends React.Component {
 		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
 	
 	onAuthStateChanged = (user) => {
-		console.log(user);
+		// console.log(user);
 		if (user) {
+			console.log('Usuário logado');
 			this.loginSucesso();
 		}
 	};
@@ -88,44 +89,10 @@ class Login extends React.Component {
 	    );
 	};
 
-	logout = (user) => {
-	// static logout ) {
-		console.log(user);
-		// const user = {
-		// 	name: this.state.name,
-		// 	email: this.state.email,
-		// 	password: this.state.password,
-		// 	avatar: this.state.avatar,
-		// };
-
-		const response = firebaseRD.logout(
-			user,
-			this.logoutSucesso,
-			this.logoutFalha
-		);
-	};
-
-	logoutSucesso = () => {
-		console.log('logoutSucesso');
-		this.props.navigation.navigate("Login");
-	};
-
-	logoutFalha = () => {
-		Alert.alert(
-      		"Erro ao deslogar",
-      		"Tente novamente.",
-      		[
-				{ text: "OK", onPress: () => console.log("OK Pressed") }
-			],
-			{ cancelable: false }
-	    );	
-	};
-
 	onChangeTextEmail = (email) => this.setState({ email });
 	onChangeTextPassword = (password) => this.setState({ password });
 
 	componentDidMount() {
-		this.props.navigation.setParams({onPressAction: ()=>this.logout()})
 	}
 
 	render() {

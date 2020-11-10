@@ -1,9 +1,11 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+} from "react-native";
 import { IconButton } from "react-native-paper";
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import firebaseRD from "./FirebaseRD";
 import Login from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
 import Chat from "./src/pages/ChatPage";
@@ -15,40 +17,27 @@ const AppStack = createStackNavigator(
 		Salas: {
 			screen: Salas,
 			navigationOptions: ({ navigate, navigation }) => ({
-				title: "Salas",
-				headerRight: () =>
-				<TouchableOpacity onPress={() => Login.logout}>
-						<IconButton icon='logout' size={32} color='white' />
-					</TouchableOpacity>,
-				// <Demo/>,
-				// <ModalDropdown  defaultValue = {navigation.state.params.name} options={['English', 'Hebrew']} />,
-				// textStyle={styles.dropDownTextBtn} dropdownTextStyle={styles.dropDownTextBtn}
-				// 	// <TouchableOpacity onPress={() => navigation.navigate('AddSala')}>
-					// <TouchableOpacity >
-						// <IconButton icon='logout' size={32} color='white' onPress={() => <MyComponent/>} />,
-						
-					// </TouchableOpacity>,
-				// headerRight: () => ,
-				headerTitleStyle: {
-					textAlign: "left",
-					fontSize: 20,
-				},
+				header: ( <View
+							style={{
+								height: 60,
+								marginTop: 24,
+								backgroundColor:'#005cc5',
+								flexDirection: 'row',
+								alignItems:'center',
+								justifyContent:'center',
+								alignSelf: 'stretch',
+								textAlign: 'center',
+							}}
+							>
+								<Image source={require('./src/img/chatTab.png')} resizeMode='contain' style={{ height: 50 }} />
+							</View>
+						),
 			}),
 		},
 		Chat: {
 			screen: Chat,
 			navigationOptions: ({ navigate, navigation }) => ({
 				title: navigation.getParam('salaNome'),
-				
-				headerRight: () =>
-					<TouchableOpacity onPress={() => Login.logout}>
-						<IconButton icon='logout' size={32} color='white' />
-					</TouchableOpacity>
-				,
-				headerTitleStyle: {
-					textAlign: "left",
-					fontSize: 20,
-				},
 			}),
 		},
 		AddSala: {

@@ -129,15 +129,18 @@ class SalasPagina extends React.Component {
                                                                   })}>
 
         <Grid>
-          <Col size={80}>
+          <Col size={20} style={styles.btnEdit}>
+            <Image source={require('../img/chatimg.png')} resizeMode='contain' style={styles.imgSala} />
+          </Col>
+          <Col size={70}>
               <Row>
-                  <Text style={styles.text}> {item.nome} </Text>
+                  <Text style={styles.textTitle}> {item.nome} </Text>
               </Row>
               <Row>
-                  <Text style={styles.text}> {item.descricao} </Text>
+                  <Text style={styles.textSub}> {item.descricao} </Text>
               </Row>
           </Col>
-          <Col size={20} style={styles.btnEdit}>
+          <Col size={10} style={styles.btnEdit}>
             <IconButton icon='square-edit-outline' size={32} color='#b9babb' onPress={() => {this.modalVisivel(true); this.setInputTexto(item.nome, item.descricao), this.setItemEdita(item.key)}} />
           </Col>
         </Grid>
@@ -165,9 +168,7 @@ class SalasPagina extends React.Component {
                         </Text>
                       </View>
                       <View style={styles.menuContView}>
-                        
-                          <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgEdit} />
-                        
+                        <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgEdit} />
                       </View>
 
                       <TextInput
@@ -205,6 +206,10 @@ class SalasPagina extends React.Component {
 
                       <TouchableOpacity style={styles.button} onPress={() => {this.editar(this.state.itemEdita); this.modalVisivel(false)}} >
                         <Text style={styles.buttonTitle}>Confirmar</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity style={styles.buttonCancel} onPress={() => {this.modalVisivel(false)}} >
+                        <Text style={styles.buttonTitle}>Cancelar</Text>
                       </TouchableOpacity>
                     </View>           
                 </Modal> 
