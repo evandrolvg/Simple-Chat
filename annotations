@@ -1,2 +1,5 @@
 teste1@teste1.com
 teste2@teste2.com
+
+Run Project (and clear caches): 
+expo start -c

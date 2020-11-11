@@ -40,16 +40,12 @@ class Registro extends React.Component {
 				avatar: this.state.avatar,
 			};
 			await firebaseRD.registro(user);
-			this.goLogin();
+			setTimeout(() => {this.setState({ loading: false })}, 5000)
 		} catch ({ message }) {
 			this.setState({ loading: false })
 			console.log("ERROR:" + message);
 		}
 	};
-
-	goLogin() {
-		this.props.navigation.replace("Login");
-	}
 
 	onChangeTextEmail = (email) => this.setState({ email });
 	onChangeTextPassword = (password) => this.setState({ password });
@@ -62,7 +58,7 @@ class Registro extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+				<KeyboardAvoidingView keyboardVerticalOffset = {-500} behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<Loader
           					loading={this.state.loading} />

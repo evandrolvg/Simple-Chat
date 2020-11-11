@@ -74,15 +74,22 @@ class FirebaseRD {
 			.then(
 					function () {
 						console.log(
-							"USUÁRIO CRIADO. EMAIL:" + user.email + " NAME:" + user.name
+							"USUÁRIO CRIADO. EMAIL:" + user.email
 						);
 
 						var userf = firebase.auth().currentUser;
+						console.log('-----------------');
+						console.log(userf);
+						console.log('-----------------');
 						userf.updateProfile({ displayName: user.name }).then(
 							function () {
-								// alert(
-								// 	"Usuário " + user.name + " criado com sucesso. Faça login."
-								// );
+								firebase.database()
+								.ref(`Usuario/${userf.uid}`)
+								.set({
+									name: user.name,
+									
+								})
+								.then(() => console.log('Usuario gravado'));
 							},
 							function (error) {
 								console.warn("Error");
@@ -94,7 +101,7 @@ class FirebaseRD {
 				alert(
 					"Falha ao criar conta. (" +
 						this.getMsgByErrorCode(error.code) +
-						")"
+					")"
 				);
 			})
 	};
@@ -167,6 +174,11 @@ class FirebaseRD {
 			);
 		}
 	};
+
+	refUsuario(uid) {
+		return firebase.database().ref(`Usuario/${uid}`);
+		
+	}
 	// ------------- FIM REGISTRO USUÁRIO -------------
 
 	// ------------- SALAS -------------

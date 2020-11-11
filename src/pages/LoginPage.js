@@ -1,16 +1,13 @@
 import React from "react";
-import { Constants, ImagePicker, Permissions } from "expo";
 import {
 	Text,
 	TextInput,
 	ScrollView,
 	TouchableOpacity,
 	View,
-	Button,
-	ImageEditor,
 	KeyboardAvoidingView,
-	ActivityIndicator,
 	Image,
+	ToastAndroid,
 	Alert
 } from "react-native";
 
@@ -27,8 +24,8 @@ class Login extends React.Component {
 
 		this.state = {
 			loading: true,
-			name: "Teste1",
-			email: "teste1@teste1.com",
+			name: "",
+			email: "evandrolvg@gmail.com",
 			password: "123456",
 			avatar: "",
 			// name: "",
@@ -63,7 +60,7 @@ class Login extends React.Component {
 	};
 
 	loginSucesso = async () => {
-		console.log(this.state);
+		// console.log(this.state);
 		//  return false;
 		this.setState({ loading: false })
 		const avatar = '';
@@ -81,13 +78,25 @@ class Login extends React.Component {
 		// 	} catch (err) {
 		// 		console.log("UPLOAD IMAGE ERROR: " + err.message); //Cannot load an empty url
 		// 	}
-			
-			this.props.navigation.navigate("Salas", {
-				name: this.state.name,
-				email: this.state.email,
-				avatar: avatar,
-				user: this.state
+		try {
+			firebase.database().ref(`Usuario/${firebaseRD.uid}`).once('value').then((snapshot) => {
+				let userName = snapshot.val().name;
+				this.setState({ name: userName });
+
+				this.props.navigation.navigate("Salas", {
+					name: this.state.name,
+					email: this.state.email,
+					avatar: avatar,
+					user: this.state
+				});
 			});
+		} catch (err) {
+			ToastAndroid.showWithGravity(
+				"Ocorreu algum erro ao logar.",
+				ToastAndroid.SHORT,
+				ToastAndroid.BOTTOM
+			);
+		}
 	};
 
 	loginFalha = () => {
@@ -107,7 +116,10 @@ class Login extends React.Component {
 
 	componentDidMount() {
 		this.setState({ loading: false })
+		
 	}
+
+  
 
 	render() {
 		return (

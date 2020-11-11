@@ -72,6 +72,7 @@ class SalasPagina extends React.Component {
   }
   
   componentDidMount() {
+    console.log(this.state);
     this.listenSalas(firebaseRD.refSalas);
   }
 
