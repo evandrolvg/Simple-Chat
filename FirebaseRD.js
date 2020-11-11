@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import { auth, initializeApp, storage } from 'firebase';
 import uuid from "uuid";
+import { ToastAndroid } from "react-native";
 
 const config = {
 	apiKey: "AIzaSyClR7ubaWldDWozskw2Ku7FDxEjStmbkTk",
@@ -91,11 +92,34 @@ class FirebaseRD {
 					}
 			)
 			.catch((error) => {
-				console.error("ERROR:" + typeof error + " string:" + error.message);
-
 				alert(
 					"Falha ao criar conta. (" +
 						this.getMsgByErrorCode(error.code) +
+						")"
+				);
+			})
+	};
+
+	esqueciSenha = async (email) => {
+		firebase
+			.auth()
+			.sendPasswordResetEmail(email)
+			.then(
+					function () {
+						console.log(
+							"Email enviado"
+						);
+						ToastAndroid.showWithGravity(
+							"Email enviado",
+							ToastAndroid.SHORT,
+							ToastAndroid.BOTTOM
+						);
+					}
+			)
+			.catch((error) => {
+				alert(
+						"Falha ao resetar senha. (" +
+							this.getMsgByErrorCode(error.code) +
 						")"
 				);
 			})

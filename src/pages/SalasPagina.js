@@ -163,7 +163,7 @@ class SalasPagina extends React.Component {
                       <View style={styles.footerView}>
                         <Text style={styles.footerText}>
                           <Text>
-                            Informe os dados da nova sala
+                            Editar sala
                           </Text>
                         </Text>
                       </View>
@@ -242,7 +242,7 @@ class SalasPagina extends React.Component {
                         
                       </View>                                      
                       <View style={styles.menuContView}>
-                        <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate('Registro')}}>
+                        <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate("Perfil", { user: this.state });}}>
                           <Grid>
                               <Col size={40} style={styles.btnMenu}>
                                 <Image source={require('../img/user.png')} resizeMode='contain' style={styles.imgBtnMenu} />

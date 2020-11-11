@@ -135,10 +135,13 @@ class Login extends React.Component {
 							</TouchableOpacity>
 
 							<View style={styles.footerView}>
+								<Text style={styles.footerTextEsqueci}>
+									<Text onPress={() => this.props.navigation.navigate("EsqueciSenha")} >
+										Esqueci minha senha
+									</Text>
+								</Text>
 								<Text style={styles.footerText}>
-									<Text
-										onPress={() => this.props.navigation.navigate("Registro")}
-									>
+									<Text onPress={() => this.props.navigation.navigate("Registro")} >
 										Não possui conta? Cadastre-se
 									</Text>
 								</Text>

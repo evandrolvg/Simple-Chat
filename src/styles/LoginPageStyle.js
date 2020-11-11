@@ -56,7 +56,13 @@ export default StyleSheet.create({
 		alignItems: "center",
 		marginTop: 20,
 	},
+	footerTextEsqueci: {
+		paddingBottom: 10,
+		fontSize: 16,
+		color: "grey",
+	},
 	footerText: {
+		paddingBottom: 10,
 		fontSize: 16,
 		color: "#2e2e2d",
 	},
