@@ -15,33 +15,28 @@ import {
 } from "react-native";
 
 import styles from "../styles/LoginPageStyle";
+import Loader from "../components/Loading";
 import firebaseRD from "../../FirebaseRD";
 import firebase from "firebase";
-import { auth, initializeApp, storage } from "firebase";
-import uuid from "uuid";
-
-
 
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.passwordTextInputRef = React.createRef();
 		this.observeAuth();
-	} 
 
-	state = {
-		name: "Teste1",
-		email: "teste1@teste1.com",
-		password: "123456",
-		avatar: "",
-	};
-
-	// state = {
-	// 	name: "",
-	// 	email: "",
-	// 	password: "",
-	// 	avatar: "",
-	// };
+		this.state = {
+			loading: true,
+			name: "Teste1",
+			email: "teste1@teste1.com",
+			password: "123456",
+			avatar: "",
+			// name: "",
+			// email: "",
+			// password: "",
+			// avatar: "",
+		}
+	}
 
 	//se logado antes
 	observeAuth = () =>
@@ -56,6 +51,7 @@ class Login extends React.Component {
 	};
 
 	logar = async () => {
+		this.setState({ loading: true })
 		const user = {
 			name: this.state.name,
 			email: this.state.email,
@@ -67,18 +63,35 @@ class Login extends React.Component {
 	};
 
 	loginSucesso = async () => {
-		var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
-		const avatar = await ref.getDownloadURL();
-
-		this.props.navigation.navigate("Salas", {
-			name: this.state.name,
-			email: this.state.email,
-			avatar: avatar,
-			user: this.state
-		});
+		console.log(this.state);
+		//  return false;
+		this.setState({ loading: false })
+		const avatar = '';
+		// try {
+		// 	var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+		// 	// avatar = await ref.getDownloadURL();
+		// 	ref.getDownloadURL()
+		// 		.then(result => {
+		// 			avatar = result;
+		// 		})
+		// 		.catch(err = {
+		// 			// do something with err
+		// 		});
+		// 		this.setState({ loading: false })
+		// 	} catch (err) {
+		// 		console.log("UPLOAD IMAGE ERROR: " + err.message); //Cannot load an empty url
+		// 	}
+			
+			this.props.navigation.navigate("Salas", {
+				name: this.state.name,
+				email: this.state.email,
+				avatar: avatar,
+				user: this.state
+			});
 	};
 
 	loginFalha = () => {
+		this.setState({ loading: false })
 		Alert.alert(
       		"Erro ao logar",
       		"Tente novamente.",
@@ -93,6 +106,7 @@ class Login extends React.Component {
 	onChangeTextPassword = (password) => this.setState({ password });
 
 	componentDidMount() {
+		this.setState({ loading: false })
 	}
 
 	render() {
@@ -100,6 +114,8 @@ class Login extends React.Component {
 			<View style={styles.container}>
 				<KeyboardAvoidingView keyboardVerticalOffset = {-500} behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
+						<Loader
+          					loading={this.state.loading} />
 						<View style={styles.logoView}>
 							<Image style={styles.logo} source={require("../img/chat.png")} />
 						</View>
@@ -114,6 +130,7 @@ class Login extends React.Component {
 								underlineColorAndroid="transparent"
 								autoCapitalize="none"
 								// autoFocus={true} 
+								keyboardType="email-address"
 								returnKeyType="next"
                 				onSubmitEditing={() => { this.passwordTextInputRef.current.focus(); }}
 							/>

@@ -59,7 +59,7 @@ export default StyleSheet.create({
 	footerTextEsqueci: {
 		paddingBottom: 10,
 		fontSize: 16,
-		color: "grey",
+		color: "blue",
 	},
 	footerText: {
 		paddingBottom: 10,

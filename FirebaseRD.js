@@ -80,10 +80,9 @@ class FirebaseRD {
 						var userf = firebase.auth().currentUser;
 						userf.updateProfile({ displayName: user.name }).then(
 							function () {
-								alert(
-									"Usuário " + user.name + " criado com sucesso. Faça login."
-								);
-								
+								// alert(
+								// 	"Usuário " + user.name + " criado com sucesso. Faça login."
+								// );
 							},
 							function (error) {
 								console.warn("Error");

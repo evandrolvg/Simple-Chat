@@ -1,7 +1,4 @@
 import React from "react";
-import * as Permissions from "expo-permissions";
-import * as ImagePicker from "expo-image-picker";
-import ImageEditor from "@react-native-community/image-editor";
 
 import {
 	Text,
@@ -15,16 +12,26 @@ import {
 } from "react-native";
 import styles from "../styles/RegistroPageStyle";
 import firebaseRD from "../../FirebaseRD";
+import Loader from "../components/Loading";
 
 class Registro extends React.Component {
-	state = {
-		name: "Teste1",
-		email: "teste1@teste1.com",
-		password: "123456",
-		avatar: "",
-	};
+	constructor(props) {
+		super(props);
+		this.nomeTextInputRef = React.createRef();
+		this.emailTextInputRef = React.createRef();
+		this.passwordTextInputRef = React.createRef();
+
+		this.state = {
+			loading: true,
+			name: "",
+			email: "",
+			password: "",
+			avatar: "",
+		}
+	} 
 
 	registrar = async () => {
+		this.setState({ loading: true })
 		try {
 			const user = {
 				name: this.state.name,
@@ -35,6 +42,7 @@ class Registro extends React.Component {
 			await firebaseRD.registro(user);
 			this.goLogin();
 		} catch ({ message }) {
+			this.setState({ loading: false })
 			console.log("ERROR:" + message);
 		}
 	};
@@ -47,68 +55,17 @@ class Registro extends React.Component {
 	onChangeTextPassword = (password) => this.setState({ password });
 	onChangeTextName = (name) => this.setState({ name });
 
-	 onImageUpload = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-    try {
-      // only if user allows permission to camera roll
-      if (cameraRollPerm === 'granted') {
-        console.log('choosing image granted...');
-        let pickerResult = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-        console.log(
-          'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
-        );
-
-        var wantedMaxSize = 150;
-        var rawheight = pickerResult.height;
-        var rawwidth = pickerResult.width;
-        
-        var ratio = rawwidth / rawheight;
-        var wantedwidth = wantedMaxSize;
-        var wantedheight = wantedMaxSize/ratio;
-        // check vertical or horizontal
-        if(rawheight > rawwidth){
-            wantedwidth = wantedMaxSize*ratio;
-            wantedheight = wantedMaxSize;
-        }
-        console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
-        // let resizedUri = await new Promise((resolve, reject) => {
-        //   ImageEditor.cropImage(pickerResult.uri,
-        //   {
-        //       offset: { x: 0, y: 0 },
-        //       size: { width: pickerResult.width, height: pickerResult.height },
-        //       displaySize: { width: wantedwidth, height: wantedheight },
-        //       resizeMode: 'contain',
-        //   },
-        //   (uri) => resolve(uri),
-        //   () => reject(),
-        //   );
-		// });
-		console.log('------------------');
-		console.log(pickerResult.uri);
-        let uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
-        //let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
-        await this.setState({ avatar: uploadUrl });
-        console.log(" - await upload successful url:" + uploadUrl);
-        console.log(" - await upload successful avatar state:" + this.state.avatar);
-        await firebaseRD.updateAvatar(uploadUrl); //might failed
-      }
-    } catch (err) {
-      console.log('onImageUpload error:' + err.message);
-      alert('Upload image error:' + err.message);
-    }
-  };
-
+	componentDidMount() {
+		this.setState({ loading: false })
+	}
 
 	render() {
 		return (
 			<View style={styles.container}>
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
+						<Loader
+          					loading={this.state.loading} />
 						<View style={styles.logoView}>
 							<Image style={styles.logo} source={require("../img/chat.png")} />
 						</View>
@@ -122,6 +79,9 @@ class Registro extends React.Component {
 								value={this.state.name}
 								underlineColorAndroid="transparent"
 								autoCapitalize="words"
+								returnKeyType="next"
+								onSubmitEditing={() => { this.emailTextInputRef.current.focus(); }}
+								ref={this.nomeTextInputRef}
 							/>
 							<TextInput
 								style={styles.input}
@@ -131,6 +91,10 @@ class Registro extends React.Component {
 								value={this.state.email}
 								underlineColorAndroid="transparent"
 								autoCapitalize="none"
+								keyboardType="email-address"
+								returnKeyType="next"
+                				onSubmitEditing={() => { this.passwordTextInputRef.current.focus(); }}
+								ref={this.emailTextInputRef}
 							/>
 							<TextInput
 								style={styles.input}
@@ -141,6 +105,7 @@ class Registro extends React.Component {
 								value={this.state.password}
 								underlineColorAndroid="transparent"
 								autoCapitalize="none"
+								ref={this.passwordTextInputRef}
 							/>
 
 							<TouchableOpacity
@@ -148,14 +113,6 @@ class Registro extends React.Component {
 								onPress={this.registrar}>
 								<Text style={styles.buttonTitle}>Confirmar</Text>
 							</TouchableOpacity>
-
-							<View style={styles.footerView}>
-								<Text style={styles.footerText}>
-									<Text onPress={this.onImageUpload}>
-										Upload foto de perfil
-									</Text>
-								</Text>
-							</View>
 						</View>
 					</ScrollView>
 				</KeyboardAvoidingView>
