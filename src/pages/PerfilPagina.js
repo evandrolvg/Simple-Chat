@@ -13,107 +13,90 @@ import {
 	Image,
 	
 } from "react-native";
-import styles from "../styles/RegistroPageStyle";
+import styles from "../styles/PerfilPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
 
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(this.props.navigation.state.params);
+		this.nomeTextInputRef = React.createRef();
+
 		this.state = {
 			user: this.props.navigation.state.params.user,
 		};
 	}
 
-	registrar = async () => {
-		console.log('registrar');
-		try {
-			const user = {
-				name: this.state.name,
-				email: this.state.email,
-				password: this.state.password,
-				avatar: this.state.avatar,
-			};
-			await firebaseRD.registro(user);
-			this.goLogin();
-		} catch ({ message }) {
-			console.log("ERROR:" + message);
-		}
-	};
-
-	// goLogin() {
-	// 	console.log('gologin');
-	// 	this.props.navigation.replace("Login");
-	// }
-
-	onChangeTextEmail = (email) => this.setState({ email });
-	onChangeTextPassword = (password) => this.setState({ password });
 	onChangeTextName = (name) => this.setState({ name });
+	
+	onImageUpload = async () => {
+		const { status: cameraRollPerm } = await Permissions.askAsync(
+			Permissions.CAMERA_ROLL
+		);
+		try {
+		// only if user allows permission to camera roll
+			if (cameraRollPerm === 'granted') {
+			let pickerResult = await ImagePicker.launchImageLibraryAsync({
+				allowsEditing: true,
+				aspect: [4, 3],
+			});
+			// console.log(
+			// 	'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
+			// );
 
-	 onImageUpload = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-    try {
-      // only if user allows permission to camera roll
-      if (cameraRollPerm === 'granted') {
-        console.log('choosing image granted...');
-        let pickerResult = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-        console.log(
-          'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
-        );
+			var wantedMaxSize = 150;
+			var rawheight = pickerResult.height;
+			var rawwidth = pickerResult.width;
+			
+			var ratio = rawwidth / rawheight;
+			var wantedwidth = wantedMaxSize;
+			var wantedheight = wantedMaxSize/ratio;
+			// check vertical or horizontal
+			if(rawheight > rawwidth){
+				wantedwidth = wantedMaxSize*ratio;
+				wantedheight = wantedMaxSize;
+			}
 
-        var wantedMaxSize = 150;
-        var rawheight = pickerResult.height;
-        var rawwidth = pickerResult.width;
-        
-        var ratio = rawwidth / rawheight;
-        var wantedwidth = wantedMaxSize;
-        var wantedheight = wantedMaxSize/ratio;
-        // check vertical or horizontal
-        if(rawheight > rawwidth){
-            wantedwidth = wantedMaxSize*ratio;
-            wantedheight = wantedMaxSize;
-        }
-        console.log("scale image to x:" + wantedwidth + " y:" + wantedheight);
-        // let resizedUri = await new Promise((resolve, reject) => {
-        //   ImageEditor.cropImage(pickerResult.uri,
-        //   {
-        //       offset: { x: 0, y: 0 },
-        //       size: { width: pickerResult.width, height: pickerResult.height },
-        //       displaySize: { width: wantedwidth, height: wantedheight },
-        //       resizeMode: 'contain',
-        //   },
-        //   (uri) => resolve(uri),
-        //   () => reject(),
-        //   );
-		// });
-		console.log('------------------');
-		console.log(pickerResult.uri);
-        let uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
-        //let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
-        await this.setState({ avatar: uploadUrl });
-        console.log(" - await upload successful url:" + uploadUrl);
-        console.log(" - await upload successful avatar state:" + this.state.avatar);
-        await firebaseRD.updateAvatar(uploadUrl); //might failed
-      }
-    } catch (err) {
-      console.log('onImageUpload error:' + err.message);
-      alert('Upload image error:' + err.message);
-    }
+			firebaseRD.uploadImage(pickerResult.uri)
+				.then(resp => {
+					console.log(`Sucesso: ${resp}`);
+					this.setState({ avatar: resp });		
+				})
+				.catch(err => console.log(err));
+			
+				// console.log(pickerResult.uri);
+			// const uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
+			// if (!this._unmounted) {
+			// 	  const url = uploadUrl;
+			// 	  console.log(uploadUrl);
+			// 	// this.setState({ user: user });
+			// 	this.setState({ avatar: url });
+			// }
+			// //let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
+			// console.log(" - await upload successful url:" + uploadUrl);
+			// console.log(" - await upload successful avatar state:" + this.state.avatar);
+			// await firebaseRD.updateAvatar(uploadUrl); //might failed
+      		}
+		} catch (err) {
+			console.log('onImageUpload error:' + err.message);
+			alert('Upload image error:' + err.message);
+		}
   };
 
 
 	render() {
+		console.log(this.state.avatar);
 		return (
 			<View style={styles.container}>
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<View style={styles.logoView}>
-							<Image style={styles.logo} source={require("../img/chat.png")} />
+							{typeof  this.state.avatar != 'undefined' && (
+								// <Text>Results Found</Text>
+								<Image style={styles.logo} source={{uri: this.state.avatar}} />
+							)}
+							{typeof this.state.avatar == 'undefined' && (
+								<Image style={styles.logo} source={require("../img/chat.png")} />
+							)}
 						</View>
 
 						<View style={(styles.container, styles.mt)}>
@@ -125,26 +108,22 @@ class Registro extends React.Component {
 								value={this.state.user.name}
 								underlineColorAndroid="transparent"
 								autoCapitalize="words"
+								ref={this.nomeTextInputRef}
 							/>
-							<TextInput
-								style={styles.input}
-								placeholder="E-mail"
-								placeholderTextColor="#aaaaaa"
-								onChangeText={this.onChangeTextEmail}
-								value={this.state.user.email}
-								underlineColorAndroid="transparent"
-								autoCapitalize="none"
-							/>
-							<TextInput
-								style={styles.input}
-								placeholderTextColor="#aaaaaa"
-								secureTextEntry
-								placeholder="Password"
-								onChangeText={this.onChangeTextPassword}
-								value={this.state.password}
-								underlineColorAndroid="transparent"
-								autoCapitalize="none"
-							/>
+
+							<View style={styles.footerView}>
+								<Text style={styles.footerTextEsqueci}>
+									<Text onPress={() => this.props.navigation.navigate("EsqueciSenha")} >
+										Alterar senha
+									</Text>
+								</Text>
+
+								<Text style={styles.footerText}>
+									<Text onPress={this.onImageUpload}>
+										Upload foto de perfil
+									</Text>
+								</Text>
+							</View>
 
 							<TouchableOpacity
 								style={styles.button}
@@ -152,13 +131,6 @@ class Registro extends React.Component {
 								<Text style={styles.buttonTitle}>Confirmar</Text>
 							</TouchableOpacity>
 
-							<View style={styles.footerView}>
-								<Text style={styles.footerText}>
-									<Text onPress={this.onImageUpload}>
-										Upload foto de perfil
-									</Text>
-								</Text>
-							</View>
 						</View>
 					</ScrollView>
 				</KeyboardAvoidingView>

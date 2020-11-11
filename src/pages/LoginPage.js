@@ -83,6 +83,12 @@ class Login extends React.Component {
 				let userName = snapshot.val().name;
 				this.setState({ name: userName });
 
+				ToastAndroid.showWithGravity(
+					"Olá " + this.state.name,
+					ToastAndroid.SHORT,
+					ToastAndroid.BOTTOM
+				);
+				
 				this.props.navigation.navigate("Salas", {
 					name: this.state.name,
 					email: this.state.email,

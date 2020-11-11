@@ -146,7 +146,15 @@ class FirebaseRD {
 						/* noop but you can track the progress here */
 					},
 					reject /* this is where you would put an error callback! */,
-					() => resolve(task.snapshot.downloadURL)
+					() => 
+					{
+						ref.getDownloadURL()
+							.then(url => {
+								console.log('[completed. Dowload URL]' + url);
+								resolve(url);
+							}); 
+					}
+					// resolve(task.snapshot.getDownloadURL)
 				);
 			});
 		} catch (err) {
@@ -155,7 +163,6 @@ class FirebaseRD {
 	};
 
 	updateAvatar = (url) => {
-		//await this.setState({ avatar: url });
 		var userf = firebase.auth().currentUser;
 		if (userf != null) {
 			userf.updateProfile({ avatar: url }).then(

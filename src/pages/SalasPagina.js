@@ -6,11 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
-  Icon,
-  Button,
-  TouchableHighlight,
-  SafeAreaView,
   Image,
+  ToastAndroid
 } from "react-native";
 import { IconButton, List, Divider, Avatar } from 'react-native-paper';
 import styles from "../styles/SalasPaginaStyle";
@@ -72,7 +69,8 @@ class SalasPagina extends React.Component {
   }
   
   componentDidMount() {
-    console.log(this.state);
+    // console.log(this.state);
+   
     this.listenSalas(firebaseRD.refSalas);
   }
 
@@ -225,33 +223,34 @@ class SalasPagina extends React.Component {
                       <View style={styles.menuContView}>
                         <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate('AddSala')}}>
                           <Grid>
-                              <Col size={40} style={styles.btnMenu}>
-                                <Row>
-                                  <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgBtnMenu} />
-                                </Row>
-                              </Col>
-                              <Col size={60} style={styles.btnMenu}>
-                                <Row>
-                                  <Text>Adicionar sala</Text>
-                                </Row>
-                              </Col>
-                            </Grid>
+                            <Col size={40} style={styles.btnMenu}>
+                              <Row>
+                                <Image source={require('../img/room.png')} resizeMode='contain' style={styles.imgBtnMenu} />
+                              </Row>
+                            </Col>
+                            <Col size={60} style={styles.btnMenu}>
+                              <Row>
+                                <Text>Adicionar sala</Text>
+                              </Row>
+                            </Col>
+                          </Grid>
                         </TouchableOpacity>
                       </View>
 
                       <View style={styles.menuContView, styles.borderBottom}>
-                        
-                      </View>                                      
+                      </View>
+                      
+
                       <View style={styles.menuContView}>
                         <TouchableOpacity style={styles.btnMenu} onPress={() => {this.menuVisivel(false); this.props.navigation.navigate("Perfil", { user: this.state });}}>
                           <Grid>
-                              <Col size={40} style={styles.btnMenu}>
-                                <Image source={require('../img/user.png')} resizeMode='contain' style={styles.imgBtnMenu} />
-                              </Col>
-                              <Col size={60} style={styles.btnMenu}>
-                                  <Text>Meu perfil</Text>
-                              </Col>
-                            </Grid>
+                            <Col size={40} style={styles.btnMenu}>
+                              <Image source={require('../img/user.png')} resizeMode='contain' style={styles.imgBtnMenu} />
+                            </Col>
+                            <Col size={60} style={styles.btnMenu}>
+                                <Text>Meu perfil</Text>
+                            </Col>
+                          </Grid>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.menuContView}>
