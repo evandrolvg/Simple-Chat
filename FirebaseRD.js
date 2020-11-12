@@ -73,26 +73,23 @@ class FirebaseRD {
 			.createUserWithEmailAndPassword(user.email, user.password)
 			.then(
 					function () {
+						firebase.auth().signOut();
 						console.log(
 							"USUÁRIO CRIADO. EMAIL:" + user.email
 						);
 
-						var userf = firebase.auth().currentUser;
-						console.log('-----------------');
-						console.log(userf);
-						console.log('-----------------');
 						userf.updateProfile({ displayName: user.name }).then(
 							function () {
-								firebase.database()
-								.ref(`Usuario/${userf.uid}`)
-								.set({
-									name: user.name,
-									
-								})
-								.then(() => console.log('Usuario gravado'));
+								// firebase.database()
+								// .ref(`Usuario/${userf.uid}`)
+								// .set({
+								// 	name: user.name,
+								// })
+								// .then(() => console.log('Usuario gravado'));
+								console.log('Usuario gravado')
 							},
 							function (error) {
-								console.warn("Error");
+								console.log("Erro registro");
 							}
 						);
 					}
@@ -108,24 +105,40 @@ class FirebaseRD {
 
 	editaUsuario(item){
 		var userf = firebase.auth().currentUser;
-		firebase.database()
-			  .ref(`Usuario/${userf.uid}`).update({name: item.name})
-			  .then(
-					function () {
-						ToastAndroid.showWithGravity(
-							"Dados alterados",
-							ToastAndroid.SHORT,
-							ToastAndroid.BOTTOM
-						);
-					}
-			)
-			.catch((error) => {
-				alert(
-						"Erro ao alterar dados. (" +
-							this.getMsgByErrorCode(error.code) +
-						")"
+		userf.updateProfile({ displayName: item.name }).then(
+			function () {
+				ToastAndroid.showWithGravity(
+					"Dados alterados",
+					ToastAndroid.SHORT,
+					ToastAndroid.BOTTOM
 				);
-			})
+			},
+			function (error) {
+				ToastAndroid.showWithGravity(
+					"Erro ao alterar dados",
+					ToastAndroid.SHORT,
+					ToastAndroid.BOTTOM
+				);
+			}
+		);
+		// firebase.database()
+		// 	  .ref(`Usuario/${userf.uid}`).update({name: item.name})
+		// 	  .then(
+		// 			function () {
+		// 				ToastAndroid.showWithGravity(
+		// 					"Dados alterados",
+		// 					ToastAndroid.SHORT,
+		// 					ToastAndroid.BOTTOM
+		// 				);
+		// 			}
+		// 	)
+		// 	.catch((error) => {
+		// 		alert(
+		// 				"Erro ao alterar dados. (" +
+		// 					this.getMsgByErrorCode(error.code) +
+		// 				")"
+		// 		);
+		// 	})
 	}
 
 	esqueciSenha = async (email) => {
@@ -154,7 +167,7 @@ class FirebaseRD {
 	};
 
 	uploadImage = async (uri) => {
-		console.log("Imagem upload. URI:" + uri);
+		// console.log("Imagem upload. URI:" + uri);
 		try {
 			const response = await fetch(uri);
 			const blob = await response.blob();
@@ -172,7 +185,7 @@ class FirebaseRD {
 					{
 						ref.getDownloadURL()
 							.then(url => {
-								console.log('[completed. Dowload URL]' + url);
+								// console.log('[completed. Dowload URL]' + url);
 								resolve(url);
 							}); 
 					}
@@ -189,11 +202,11 @@ class FirebaseRD {
 		if (userf != null) {
 			userf.updateProfile({ avatar: url }).then(
 				function () {
-					console.log("Imagem. URL:" + url);
+					// console.log("Imagem. URL:" + url);
 					alert("Imagem salva com sucesso.");
 				},
 				function (error) {
-					console.warn("Erro update imagem.");
+					// console.warn("Erro update imagem.");
 					alert("Erro update imagem:" + error.message);
 				}
 			);
@@ -239,12 +252,11 @@ class FirebaseRD {
 	}
 
 	criarSala = (salaNome, salaDescricao) => {
-		console.log(salaNome);
 		const newReference = firebase.database()
   			.ref('/Salas')
   			.push();
 
-		console.log('Auto generated key: ', newReference.key);
+		// console.log('Auto generated key: ', newReference.key);
 		newReference
 		.set({
 				nome: salaNome,

@@ -23,11 +23,11 @@ import time from "../../Timer";
 // };
 
 class Chat extends React.Component {
-	static navigationOptions = ({ navigation }) => {
-		return {
-			title: navigation.getParam('salaNome'),
-		};
-	};
+	// static navigationOptions = ({ navigation }) => {
+	// 	return {
+	// 		title: navigation.getParam('salaNome'),
+	// 	};
+	// };
 	
 	constructor(props) {
 		super(props);
@@ -38,10 +38,12 @@ class Chat extends React.Component {
 	};
 
 	get user() {
+		var userf = firebase.auth().currentUser;
+
 		return {
-			name: this.props.navigation.state.params.name,
+			name: userf.displayName,
 			email: this.props.navigation.state.params.email,
-			avatar: this.props.navigation.state.params.avatar,
+			avatar: userf.photoURL,
 			image: this.props.navigation.state.params.email,
 			salaKey: this.props.navigation.state.params.salaKey,
             salaNome: this.props.navigation.state.params.salaNome,
@@ -103,6 +105,12 @@ class Chat extends React.Component {
 				textStyle={styles.systemMessageText}
 			/>
 		);
+	}
+
+	componentDidMount() {
+		this._isMounted = true;
+		
+		
 	}
 	  
 	render() {

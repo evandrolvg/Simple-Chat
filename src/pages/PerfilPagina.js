@@ -2,7 +2,6 @@ import React from "react";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import ImageEditor from "@react-native-community/image-editor";
-
 import {
 	Text,
 	TextInput,
@@ -13,17 +12,22 @@ import {
 	Image,
 	
 } from "react-native";
+import Loader from "../components/Loading";
 import styles from "../styles/PerfilPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
+import firebase from "firebase";
 
 class PerfilPagina extends React.Component {
+	_isMounted = false;
+
 	constructor(props) {
 		super(props);
 		this.nomeTextInputRef = React.createRef();
 
 		this.state = {
-			user: this.props.navigation.state.params.user,
+			// user: this.props.navigation.state.params.user,
 			avatar: this.props.navigation.state.params.user.avatar
+
 		};
 	}
 
@@ -34,9 +38,9 @@ class PerfilPagina extends React.Component {
 				name: this.state.name,
 			};
 			firebaseRD.editaUsuario(user);
-			setTimeout(() => {this.setState({ loading: false })}, 5000)
+			this.setState({ loading: false });
 		} catch ({ message }) {
-			this.setState({ loading: false })
+			this.setState({ loading: false });
 			console.log("ERROR:" + message);
 		}
 	};
@@ -70,7 +74,19 @@ class PerfilPagina extends React.Component {
 			firebaseRD.uploadImage(pickerResult.uri)
 				.then(resp => {
 					console.log(`Sucesso: ${resp}`);
-					this.setState({ avatar: resp });		
+					if (this._isMounted) {
+						this.setState({ avatar: resp });
+
+						var userf = firebase.auth().currentUser;
+            			userf.updateProfile({ photoURL: resp }).then(
+							function () {
+                				console.log("Avatar OK");  
+							},
+							function (error) {
+								console.log("Erro avatar");
+							}
+						);
+					}
 				})
 				.catch(err => console.log(err));
       		}
@@ -81,12 +97,24 @@ class PerfilPagina extends React.Component {
   	};
 
 	componentDidMount() {
-		// console.log(this.state);
+		this.setState({ loading: false })
+		this._isMounted = true;
+
+		var userf = firebase.auth().currentUser;
+						
+		if (this._isMounted) {
+			this.setState({ name: userf.displayName, avatar:userf.photoURL });
+		}
 	}
+
+	componentWillUnmount() {
+    	this._isMounted = false;
+  	}
 
 	render() {
 		return (
 			<View style={styles.container}>
+				<Loader loading={this.state.loading} />
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<View style={styles.logoView}>
@@ -110,7 +138,7 @@ class PerfilPagina extends React.Component {
 								placeholder="Nome"
 								placeholderTextColor="#aaaaaa"
 								onChangeText={this.onChangeTextName}
-								defaultValue={this.state.user.name}
+								defaultValue={this.state.name}
                         		editable = {true}
 								underlineColorAndroid="transparent"
 								autoCapitalize="words"

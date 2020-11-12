@@ -6,7 +6,9 @@ import {  Text,
           KeyboardAvoidingView, 
           ScrollView, 
           Image,
-          Alert} from 'react-native';
+          Alert,
+          ToastAndroid
+} from 'react-native';
 import firebaseRD from "../../FirebaseRD";
 import styles from "../styles/AddSalaPaginaStyle";
 
@@ -29,6 +31,11 @@ class AddSalaPagina extends React.Component {
     if (this.state.nome.length > 0 && this.state.descricao.length > 0 ) {
       firebaseRD.criarSala(this.state.nome, this.state.descricao);
       this.props.navigation.navigate("Salas");
+      ToastAndroid.showWithGravity(
+        "Sala criada",
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
     }else{
       Alert.alert(
       		"Informe os dados",

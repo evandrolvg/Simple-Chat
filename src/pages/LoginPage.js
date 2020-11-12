@@ -42,10 +42,14 @@ class Login extends React.Component {
 		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
 	
 	onAuthStateChanged = (user) => {
-		// console.log(user);
-		if (user) {
-			console.log('Usuário logado');
-			this.loginSucesso();
+		console.log(user);
+		if (typeof firebaseRD.uid != undefined) {
+			if (user && typeof user != undefined) {
+				console.log('Usuário logado');
+				this.loginSucesso();
+			}
+		}else{
+			this.props.navigation.navigate("Login");
 		}
 	};
 
@@ -62,52 +66,46 @@ class Login extends React.Component {
 	};
 
 	loginSucesso = async () => {
-		// console.log(this.state);
-		this.setState({ loading: false })
+		var userf = firebase.auth().currentUser;
+						
+		if (this._isMounted) {
+			this.setState({ name: userf.displayName, avatar:userf.photoURL });
 
-		try {
-			//NOME
-			await firebase.database().ref(`Usuario/${firebaseRD.uid}`).once('value').then((snapshot) => {
-				let userName = snapshot.val().name;
-				if (this._isMounted) {
-					this.setState({ name: userName });
-				}
-
-				try {
-					var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
-					// avatar = await ref.getDownloadURL();
-					ref.getDownloadURL()
-						.then(result => {
-							if (this._isMounted) {
-								this.setState({ avatar: result })
-								
-								this.props.navigation.navigate("Salas", {
-									name: this.state.name,
-									email: this.state.email,
-									avatar: this.state.avatar,
-									user: this.state
-								});
-							}
-						})
-						.catch(err = {
-							// do something with err
-						});
-						this.setState({ loading: false })
-				} catch (err) {
-					ToastAndroid.showWithGravity(
-						"Ocorreu algum erro ao logar.",
-						ToastAndroid.SHORT,
-						ToastAndroid.BOTTOM
-					);
-				}
+			this.props.navigation.navigate("Salas", {
+				name: this.state.name,
+				email: this.state.email,
+				avatar: this.state.avatar,
+				user: this.state
 			});
-		} catch (err) {
-			ToastAndroid.showWithGravity(
-				"Ocorreu algum erro ao logar.",
-				ToastAndroid.SHORT,
-				ToastAndroid.BOTTOM
-			);
 		}
+
+		// try {
+		// 	var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+		// 	// avatar = await ref.getDownloadURL();
+		// 	ref.getDownloadURL()
+		// 		.then(result => {
+		// 			if (this._isMounted) {
+		// 				this.setState({ avatar: result })
+						
+						
+		// 			}
+		// 			this.setState({ loading: false })
+		// 		}),
+		// 		function (error) {
+		// 			console.log('teste error');
+		// 		}
+		// 		// .catch(err = {
+		// 		// 	// do something with err
+		// 		// });
+		// } catch (err) {
+		// 	ToastAndroid.showWithGravity(
+		// 		"Ocorreu algum erro ao logar (avatar).",
+		// 		ToastAndroid.SHORT,
+		// 		ToastAndroid.BOTTOM
+		// 	);
+		// }
+			
+	
 	};
 
 	loginFalha = () => {

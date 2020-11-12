@@ -13,9 +13,11 @@ import { IconButton, List, Divider, Avatar } from 'react-native-paper';
 import styles from "../styles/SalasPaginaStyle";
 import Loader from "../components/Loading";
 import firebaseRD from "../../FirebaseRD";
+import firebase from "firebase";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
 class SalasPagina extends React.Component {
+  _isMounted = false;
 	constructor(props) {
     super(props);
     this.iniData = [];
@@ -58,12 +60,22 @@ class SalasPagina extends React.Component {
             item.descricao = this.state.inputTextSalaDescricao;
             // firebaseRD.editaSala(this.state.inputTextSalaNome,this.state.inputTextSalaDescricao);
             firebaseRD.editaSala(item);
+            
+            ToastAndroid.showWithGravity(
+              "Dados alterados",
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM
+            );
+
             return item;
+
         }
         return item;
     })
 
-    this.setState({ salas: novoDado });
+    if (this._isMounted) {
+      this.setState({ salas: novoDado });
+    }
   }
 
   menuVisivel = (bool) => {
@@ -82,10 +94,12 @@ class SalasPagina extends React.Component {
         });
       });
       
-      this.setState({
-        salas: salas,
-        loading: false
-      });
+      if (this._isMounted) {
+        this.setState({
+          salas: salas,
+          loading: false
+        });
+      }
     });
   }
 
@@ -111,18 +125,65 @@ class SalasPagina extends React.Component {
 			    { cancelable: false }
 	    );	
   };
+  
+  componentDidUpdate() {
+    // console.log('update');
+  }
 
   componentDidMount() {
+    this._isMounted = true;
+    
+    var userf = firebase.auth().currentUser;
+    if (this._isMounted) {
+      this.setState({ name: userf.displayName });
+    }
+    
     ToastAndroid.showWithGravity(
 			"Olá " + this.state.name,
 			ToastAndroid.SHORT,
 			ToastAndroid.BOTTOM
-		);
+    );
+    
     this.listenSalas(firebaseRD.refSalas);
     this.setState({ loading: false })
+
+    try {
+      var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+      // avatar = await ref.getDownloadURL();
+      ref.getDownloadURL()
+        .then(result => {
+          if (this._isMounted) {
+            this.setState({ avatar: result })
+            
+            // var userf = firebase.auth().currentUser;
+            userf.updateProfile({ photoURL: result }).then(
+							function () {
+                console.log("Avatar OK");  
+							},
+							function (error) {
+								console.log("Erro avatar");
+							}
+						);
+          }
+          this.setState({ loading: false })
+        }),
+        function (error) {
+          console.log('teste error');
+        }
+        // .catch(err = {
+        // 	// do something with err
+        // });
+    } catch (err) {
+      ToastAndroid.showWithGravity(
+        "Ocorreu algum erro ao logar (avatar).",
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
+    }
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
 		firebaseRD.refSalasOff();
   }
   
@@ -153,12 +214,12 @@ class SalasPagina extends React.Component {
         </Grid>
         <Divider />
       </TouchableOpacity>
-    
     )
     
     render() {
         return (
           <View style={styles.container}>
+              <Loader loading={this.state.loading} />
               <FlatList 
                   data={this.state.salas}
                   keyExtractor={(item) => item.key.toString()}
