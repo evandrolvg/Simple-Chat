@@ -63,6 +63,17 @@ const AppStack = createStackNavigator(
 				},
 			},
 		},
+		AlterarSenha: {
+			screen: EsqueciSenha,
+			navigationOptions: ({ navigate, navigation }) => ({
+				title: "Recuperação de senha",
+				
+				headerTitleStyle: {
+					textAlign: "left",
+					fontSize: 20,
+				},
+			}),
+		},
 	},
 	{
 		defaultNavigationOptions: {

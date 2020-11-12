@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { IconButton, List, Divider, Avatar } from 'react-native-paper';
 import styles from "../styles/SalasPaginaStyle";
+import Loader from "../components/Loading";
 import firebaseRD from "../../FirebaseRD";
 import { Col, Row, Grid } from "react-native-easy-grid";
 
@@ -21,6 +22,7 @@ class SalasPagina extends React.Component {
     this.descricaoTextInputRef = React.createRef();
 
     this.state = {
+      loading: true,
       name: this.props.navigation.state.params.name,
       email: this.props.navigation.state.params.email,
       avatar: this.props.navigation.state.params.avatar,
@@ -33,7 +35,7 @@ class SalasPagina extends React.Component {
       menuVisivel: false,
     };
   }
-  
+
   modalVisivel = (bool) => {
     this.setState({ modalVisivel: bool })
   }
@@ -68,13 +70,8 @@ class SalasPagina extends React.Component {
     this.setState({ menuVisivel: bool })
   }
   
-  componentDidMount() {
-    // console.log(this.state);
-   
-    this.listenSalas(firebaseRD.refSalas);
-  }
-
   listenSalas(refSalas) {
+    this.setState({ loading: true })
     refSalas.on("value", dataSnapshot => {
       var salas = [];
       dataSnapshot.forEach(child => {
@@ -86,7 +83,8 @@ class SalasPagina extends React.Component {
       });
       
       this.setState({
-        salas: salas
+        salas: salas,
+        loading: false
       });
     });
   }
@@ -108,23 +106,33 @@ class SalasPagina extends React.Component {
       		"Erro ao deslogar",
       		"Tente novamente.",
       		[
-				{ text: "OK", onPress: () => console.log("OK Pressed") }
-			],
-			{ cancelable: false }
+				    { text: "OK", onPress: () => console.log("OK Pressed") }
+			    ],
+			    { cancelable: false }
 	    );	
   };
-  
+
+  componentDidMount() {
+    ToastAndroid.showWithGravity(
+			"Olá " + this.state.name,
+			ToastAndroid.SHORT,
+			ToastAndroid.BOTTOM
+		);
+    this.listenSalas(firebaseRD.refSalas);
+    this.setState({ loading: false })
+  }
+
   componentWillUnmount() {
 		firebaseRD.refSalasOff();
   }
   
   renderSala = ({item}) => (
     <TouchableOpacity onPress={() => this.props.navigation.navigate("Chat", {
-      name: this.state.name,
-      email: this.state.email,
-      avatar: this.state.avatar,
-      salaKey: item.key,
-      salaNome: item.nome
+                                                                              name: this.state.name,
+                                                                              email: this.state.email,
+                                                                              avatar: this.state.avatar,
+                                                                              salaKey: item.key,
+                                                                              salaNome: item.nome
                                                                   })}>
 
         <Grid>

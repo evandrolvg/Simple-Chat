@@ -17,6 +17,8 @@ import firebaseRD from "../../FirebaseRD";
 import firebase from "firebase";
 
 class Login extends React.Component {
+	_isMounted = false;
+
 	constructor(props) {
 		super(props);
 		this.passwordTextInputRef = React.createRef();
@@ -61,40 +63,43 @@ class Login extends React.Component {
 
 	loginSucesso = async () => {
 		// console.log(this.state);
-		//  return false;
 		this.setState({ loading: false })
-		const avatar = '';
-		// try {
-		// 	var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
-		// 	// avatar = await ref.getDownloadURL();
-		// 	ref.getDownloadURL()
-		// 		.then(result => {
-		// 			avatar = result;
-		// 		})
-		// 		.catch(err = {
-		// 			// do something with err
-		// 		});
-		// 		this.setState({ loading: false })
-		// 	} catch (err) {
-		// 		console.log("UPLOAD IMAGE ERROR: " + err.message); //Cannot load an empty url
-		// 	}
-		try {
-			firebase.database().ref(`Usuario/${firebaseRD.uid}`).once('value').then((snapshot) => {
-				let userName = snapshot.val().name;
-				this.setState({ name: userName });
 
-				ToastAndroid.showWithGravity(
-					"Olá " + this.state.name,
-					ToastAndroid.SHORT,
-					ToastAndroid.BOTTOM
-				);
-				
-				this.props.navigation.navigate("Salas", {
-					name: this.state.name,
-					email: this.state.email,
-					avatar: avatar,
-					user: this.state
-				});
+		try {
+			//NOME
+			await firebase.database().ref(`Usuario/${firebaseRD.uid}`).once('value').then((snapshot) => {
+				let userName = snapshot.val().name;
+				if (this._isMounted) {
+					this.setState({ name: userName });
+				}
+
+				try {
+					var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+					// avatar = await ref.getDownloadURL();
+					ref.getDownloadURL()
+						.then(result => {
+							if (this._isMounted) {
+								this.setState({ avatar: result })
+								
+								this.props.navigation.navigate("Salas", {
+									name: this.state.name,
+									email: this.state.email,
+									avatar: this.state.avatar,
+									user: this.state
+								});
+							}
+						})
+						.catch(err = {
+							// do something with err
+						});
+						this.setState({ loading: false })
+				} catch (err) {
+					ToastAndroid.showWithGravity(
+						"Ocorreu algum erro ao logar.",
+						ToastAndroid.SHORT,
+						ToastAndroid.BOTTOM
+					);
+				}
 			});
 		} catch (err) {
 			ToastAndroid.showWithGravity(
@@ -121,11 +126,14 @@ class Login extends React.Component {
 	onChangeTextPassword = (password) => this.setState({ password });
 
 	componentDidMount() {
+		this._isMounted = true;
 		this.setState({ loading: false })
-		
 	}
 
-  
+	componentWillUnmount() {
+		this._isMounted = false;
+		firebase.database().ref(`Usuario/${firebaseRD.uid}`).off();
+  	}
 
 	render() {
 		return (
@@ -171,7 +179,7 @@ class Login extends React.Component {
 
 							<View style={styles.footerView}>
 								<Text style={styles.footerTextEsqueci}>
-									<Text onPress={() => this.props.navigation.navigate("EsqueciSenha")} >
+									<Text onPress={() => this.props.navigation.navigate("EsqueciSenha", { alterar_senha: '' })} >
 										Esqueci minha senha
 									</Text>
 								</Text>

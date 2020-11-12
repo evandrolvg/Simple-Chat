@@ -106,6 +106,28 @@ class FirebaseRD {
 			})
 	};
 
+	editaUsuario(item){
+		var userf = firebase.auth().currentUser;
+		firebase.database()
+			  .ref(`Usuario/${userf.uid}`).update({name: item.name})
+			  .then(
+					function () {
+						ToastAndroid.showWithGravity(
+							"Dados alterados",
+							ToastAndroid.SHORT,
+							ToastAndroid.BOTTOM
+						);
+					}
+			)
+			.catch((error) => {
+				alert(
+						"Erro ao alterar dados. (" +
+							this.getMsgByErrorCode(error.code) +
+						")"
+				);
+			})
+	}
+
 	esqueciSenha = async (email) => {
 		firebase
 			.auth()

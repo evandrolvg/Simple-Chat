@@ -14,9 +14,10 @@ export default StyleSheet.create({
 
 	logo: {
 		// aspectRatio: 1,
-		width: 100,
-		height: 100,
+		width: 200,
+		height: 200,
 		resizeMode: "contain",
+		borderRadius: 100,
 	},
 	logoView: {
 		marginTop: 10,
@@ -61,4 +62,8 @@ export default StyleSheet.create({
 		fontSize: 16,
 		color: "#2e2e2d",
 	},
+	link: {
+		fontSize: 16,
+		color: "#005cc5",
+	}
 });

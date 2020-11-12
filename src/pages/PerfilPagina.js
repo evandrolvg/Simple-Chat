@@ -16,15 +16,30 @@ import {
 import styles from "../styles/PerfilPaginaStyle";
 import firebaseRD from "../../FirebaseRD";
 
-class Registro extends React.Component {
+class PerfilPagina extends React.Component {
 	constructor(props) {
 		super(props);
 		this.nomeTextInputRef = React.createRef();
 
 		this.state = {
 			user: this.props.navigation.state.params.user,
+			avatar: this.props.navigation.state.params.user.avatar
 		};
 	}
+
+	editaUsuario = async () => {
+		this.setState({ loading: true })
+		try {
+			const user = {
+				name: this.state.name,
+			};
+			firebaseRD.editaUsuario(user);
+			setTimeout(() => {this.setState({ loading: false })}, 5000)
+		} catch ({ message }) {
+			this.setState({ loading: false })
+			console.log("ERROR:" + message);
+		}
+	};
 
 	onChangeTextName = (name) => this.setState({ name });
 	
@@ -37,12 +52,8 @@ class Registro extends React.Component {
 			if (cameraRollPerm === 'granted') {
 			let pickerResult = await ImagePicker.launchImageLibraryAsync({
 				allowsEditing: true,
-				aspect: [4, 3],
+				aspect: [4, 4],
 			});
-			// console.log(
-			// 	'ready to upload... pickerResult json:' + JSON.stringify(pickerResult)
-			// );
-
 			var wantedMaxSize = 150;
 			var rawheight = pickerResult.height;
 			var rawwidth = pickerResult.width;
@@ -62,41 +73,35 @@ class Registro extends React.Component {
 					this.setState({ avatar: resp });		
 				})
 				.catch(err => console.log(err));
-			
-				// console.log(pickerResult.uri);
-			// const uploadUrl = await firebaseRD.uploadImage(pickerResult.uri);
-			// if (!this._unmounted) {
-			// 	  const url = uploadUrl;
-			// 	  console.log(uploadUrl);
-			// 	// this.setState({ user: user });
-			// 	this.setState({ avatar: url });
-			// }
-			// //let uploadUrl = await firebaseRD.uploadImageAsync(resizedUri);
-			// console.log(" - await upload successful url:" + uploadUrl);
-			// console.log(" - await upload successful avatar state:" + this.state.avatar);
-			// await firebaseRD.updateAvatar(uploadUrl); //might failed
       		}
 		} catch (err) {
 			console.log('onImageUpload error:' + err.message);
 			alert('Upload image error:' + err.message);
 		}
-  };
+  	};
 
+	componentDidMount() {
+		// console.log(this.state);
+	}
 
 	render() {
-		console.log(this.state.avatar);
 		return (
 			<View style={styles.container}>
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<View style={styles.logoView}>
-							{typeof  this.state.avatar != 'undefined' && (
-								// <Text>Results Found</Text>
+							{typeof this.state.avatar != 'undefined' && (
 								<Image style={styles.logo} source={{uri: this.state.avatar}} />
 							)}
 							{typeof this.state.avatar == 'undefined' && (
 								<Image style={styles.logo} source={require("../img/chat.png")} />
 							)}
+
+							<Text style={styles.footerText}>
+								<Text style={styles.link} onPress={this.onImageUpload}>
+									Editar imagem
+								</Text>
+							</Text>
 						</View>
 
 						<View style={(styles.container, styles.mt)}>
@@ -105,29 +110,22 @@ class Registro extends React.Component {
 								placeholder="Nome"
 								placeholderTextColor="#aaaaaa"
 								onChangeText={this.onChangeTextName}
-								value={this.state.user.name}
+								defaultValue={this.state.user.name}
+                        		editable = {true}
 								underlineColorAndroid="transparent"
 								autoCapitalize="words"
 								ref={this.nomeTextInputRef}
 							/>
 
 							<View style={styles.footerView}>
-								<Text style={styles.footerTextEsqueci}>
-									<Text onPress={() => this.props.navigation.navigate("EsqueciSenha")} >
-										Alterar senha
-									</Text>
-								</Text>
-
-								<Text style={styles.footerText}>
-									<Text onPress={this.onImageUpload}>
-										Upload foto de perfil
-									</Text>
+								<Text style={styles.link} onPress={() => this.props.navigation.navigate("AlterarSenha", { alterar_senha: this.state.user.email })} >
+									Alterar senha
 								</Text>
 							</View>
 
 							<TouchableOpacity
 								style={styles.button}
-								onPress={this.registrar}>
+								onPress={this.editaUsuario}>
 								<Text style={styles.buttonTitle}>Confirmar</Text>
 							</TouchableOpacity>
 
@@ -139,4 +137,4 @@ class Registro extends React.Component {
 	}
 }
 
-export default Registro;
+export default PerfilPagina;
