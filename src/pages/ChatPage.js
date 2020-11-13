@@ -16,19 +16,7 @@ import firebase from "firebase";
 import firebaseRD from "../../FirebaseRD";
 import time from "../../Timer";
 
-// type props = {
-// 	name?: string,
-// 	email?: string,
-// 	avatar?: string,
-// };
-
 class Chat extends React.Component {
-	// static navigationOptions = ({ navigation }) => {
-	// 	return {
-	// 		title: navigation.getParam('salaNome'),
-	// 	};
-	// };
-	
 	constructor(props) {
 		super(props);
 	}
@@ -54,9 +42,9 @@ class Chat extends React.Component {
 	
 	renderLoading() {
 		return (
-		<View style={styles.loadingContainer}>
-			<ActivityIndicator size='large' color='#6646ee' />
-		</View>
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size='large' color='#6646ee' />
+			</View>
 		);
 	}
 

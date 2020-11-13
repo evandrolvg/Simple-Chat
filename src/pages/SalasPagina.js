@@ -138,17 +138,25 @@ class SalasPagina extends React.Component {
       this.setState({ name: userf.displayName });
     }
     
-    ToastAndroid.showWithGravity(
-			"Olá " + this.state.name,
-			ToastAndroid.SHORT,
-			ToastAndroid.BOTTOM
-    );
+    if (this.state.name != null) {
+      ToastAndroid.showWithGravity(
+        "Olá " + this.state.name,
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      );
+    }
     
     this.listenSalas(firebaseRD.refSalas);
     this.setState({ loading: false })
 
     try {
       var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
+      // console.log(ref);
+      if (ref) {
+        console.log('OK')
+      }else{
+        console.log('NO')
+      }
       // avatar = await ref.getDownloadURL();
       ref.getDownloadURL()
         .then(result => {
@@ -166,10 +174,11 @@ class SalasPagina extends React.Component {
 						);
           }
           this.setState({ loading: false })
-        }),
-        function (error) {
-          console.log('teste error');
-        }
+        })
+        .catch((error) => {
+                console.log(error)
+                
+            })
         // .catch(err = {
         // 	// do something with err
         // });

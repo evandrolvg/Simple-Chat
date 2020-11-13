@@ -73,13 +73,17 @@ class FirebaseRD {
 			.createUserWithEmailAndPassword(user.email, user.password)
 			.then(
 					function () {
-						firebase.auth().signOut();
+						
+						// firebase.auth().signOut();
 						console.log(
 							"USUÁRIO CRIADO. EMAIL:" + user.email
 						);
-
+						
+						var userf = firebase.auth().currentUser;
+						
 						userf.updateProfile({ displayName: user.name }).then(
 							function () {
+								firebase.storage().ref("avatar").child(userf.uid);
 								// firebase.database()
 								// .ref(`Usuario/${userf.uid}`)
 								// .set({
@@ -95,6 +99,7 @@ class FirebaseRD {
 					}
 			)
 			.catch((error) => {
+				console.log(error);
 				alert(
 					"Falha ao criar conta. (" +
 						this.getMsgByErrorCode(error.code) +
@@ -121,24 +126,6 @@ class FirebaseRD {
 				);
 			}
 		);
-		// firebase.database()
-		// 	  .ref(`Usuario/${userf.uid}`).update({name: item.name})
-		// 	  .then(
-		// 			function () {
-		// 				ToastAndroid.showWithGravity(
-		// 					"Dados alterados",
-		// 					ToastAndroid.SHORT,
-		// 					ToastAndroid.BOTTOM
-		// 				);
-		// 			}
-		// 	)
-		// 	.catch((error) => {
-		// 		alert(
-		// 				"Erro ao alterar dados. (" +
-		// 					this.getMsgByErrorCode(error.code) +
-		// 				")"
-		// 		);
-		// 	})
 	}
 
 	esqueciSenha = async (email) => {

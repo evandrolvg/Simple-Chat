@@ -42,7 +42,7 @@ class Login extends React.Component {
 		firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
 	
 	onAuthStateChanged = (user) => {
-		console.log(user);
+		// console.log(user);
 		if (typeof firebaseRD.uid != undefined) {
 			if (user && typeof user != undefined) {
 				console.log('Usuário logado');
@@ -78,34 +78,6 @@ class Login extends React.Component {
 				user: this.state
 			});
 		}
-
-		// try {
-		// 	var ref = firebase.storage().ref(`avatar/${firebaseRD.uid}`);
-		// 	// avatar = await ref.getDownloadURL();
-		// 	ref.getDownloadURL()
-		// 		.then(result => {
-		// 			if (this._isMounted) {
-		// 				this.setState({ avatar: result })
-						
-						
-		// 			}
-		// 			this.setState({ loading: false })
-		// 		}),
-		// 		function (error) {
-		// 			console.log('teste error');
-		// 		}
-		// 		// .catch(err = {
-		// 		// 	// do something with err
-		// 		// });
-		// } catch (err) {
-		// 	ToastAndroid.showWithGravity(
-		// 		"Ocorreu algum erro ao logar (avatar).",
-		// 		ToastAndroid.SHORT,
-		// 		ToastAndroid.BOTTOM
-		// 	);
-		// }
-			
-	
 	};
 
 	loginFalha = () => {

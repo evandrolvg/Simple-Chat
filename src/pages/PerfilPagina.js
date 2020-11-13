@@ -105,6 +105,7 @@ class PerfilPagina extends React.Component {
 		if (this._isMounted) {
 			this.setState({ name: userf.displayName, avatar:userf.photoURL });
 		}
+		console.log(this.state.avatar);
 	}
 
 	componentWillUnmount() {
@@ -118,10 +119,10 @@ class PerfilPagina extends React.Component {
 				<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
 					<ScrollView style={styles.container}>
 						<View style={styles.logoView}>
-							{typeof this.state.avatar != 'undefined' && (
+							{typeof this.state.avatar != 'undefined' && this.state.avatar != null && (
 								<Image style={styles.logo} source={{uri: this.state.avatar}} />
 							)}
-							{typeof this.state.avatar == 'undefined' && (
+							{typeof this.state.avatar == 'undefined' || this.state.avatar == null && (
 								<Image style={styles.logo} source={require("../img/chat.png")} />
 							)}
 
