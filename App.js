@@ -8,6 +8,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Login from "./src/pages/LoginPage";
 import Registro from "./src/pages/RegistroPage";
+// import Chat from "./src/pages/chat/Chats";
 import Chat from "./src/pages/ChatPage";
 import AddSala from "./src/pages/AddSalaPagina";
 import Salas from "./src/pages/SalasPagina";

@@ -20,7 +20,7 @@ class Chat extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	
+
 	state = {
 		messages: [],
 	};
@@ -52,7 +52,7 @@ class Chat extends React.Component {
 		return (
 		<Send {...props}>
 			<View style={styles.sendingContainer}>
-			<IconButton icon='send-circle' size={32} color='#6646ee' />
+				<IconButton icon='send-circle' size={32} color='#6646ee' />
 			</View>
 		</Send>
 		);
@@ -98,7 +98,15 @@ class Chat extends React.Component {
 	componentDidMount() {
 		this._isMounted = true;
 		
-		
+		firebaseRD.refOnMensagens(this.user.salaKey, (message) =>
+			this.setState((previousState) => ({
+				messages: GiftedChat.append(previousState.messages, message),
+			}))
+		);
+	}
+
+	componentWillUnmount() {
+		firebaseRD.refOffMensagens(this.user.salaKey);
 	}
 	  
 	render() {
@@ -115,6 +123,8 @@ class Chat extends React.Component {
 					user={this.user}
 					renderSend={this.renderSend}
 					renderLoading={this.renderLoading}
+					renderUsernameOnMessage
+
 					// renderBubble={this.renderBubble}
 					placeholder="Escreva sua mensagem..."
 					showUserAvatar
@@ -135,27 +145,7 @@ class Chat extends React.Component {
 		);
 	}
 
-	componentDidMount() {
-		// firebase.database().ref("Messages");
-		// firebase.database().ref(`Messages/${user.salaKey}`)(message) =>;
-		// console.log('sala->'+this.user.salaKey);
-		// getAvatar
-
-		// this.user.avatar = firebaseRD.getAvatar;
-		// console.log('--------CHATPAGE-------------');
-		// console.log(this.user);
-		// console.log('---------------------');
-		
-		firebaseRD.refOnMensagens(this.user.salaKey, (message) =>
-			this.setState((previousState) => ({
-				messages: GiftedChat.append(previousState.messages, message),
-			}))
-		);
-	}
-
-	componentWillUnmount() {
-		firebaseRD.refOffMensagens(this.user.salaKey);
-	}
+	
 }
 
 export default Chat;
