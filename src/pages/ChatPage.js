@@ -16,9 +16,11 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import styles from "../styles/ChatPageStyle";
 import NavigationBar from "react-native-navbar";
+import ImageModal from 'react-native-image-modal';
 import { IconButton } from "react-native-paper";
 import firebase from "firebase";
 import firebaseRD from "../../FirebaseRD";
+import { Col, Row, Grid } from "react-native-easy-grid";
 import time from "../../Timer";
 
 class Chat extends React.Component {
@@ -27,9 +29,7 @@ class Chat extends React.Component {
 	}
 
 	state = {
-		// messages: [{user: null, text: null, image: null}],
 		messages: [],
-		image: ''
 	};
 
 	get user() {
@@ -46,66 +46,48 @@ class Chat extends React.Component {
 			_id: firebaseRD.uid, // for gifted-chat
 		};
 	}
-	
-	renderLoading() {
-		return (
-			<View style={styles.loadingContainer}>
-				<ActivityIndicator size='large' color='#6646ee' />
-			</View>
-		);
-	}
 
-	renderSend(props) {
-		return (
-		<Send {...props}>
-			<View style={styles.sendingContainer}>
-				<IconButton icon='send-circle' size={32} color='#6646ee' />
-			</View>
-		</Send>
+	onImageUploadChat = async () => {
+		const { status: cameraRollPerm } = await Permissions.askAsync(
+			Permissions.CAMERA_ROLL
 		);
-	}
+		try {
+		// only if user allows permission to camera roll
+			if (cameraRollPerm === 'granted') {
+				let pickerResult = await ImagePicker.launchImageLibraryAsync({
+					allowsEditing: false,
+			});
 
-	renderBubble(props) {
-		// console.log('---------------------------------------------------------');
-		// console.log(props.currentMessage.image);
-		return (
-		// Step 3: return the component
-		
-		<Bubble
-			{...props}
-			wrapperStyle={{
-			right: {
-				// Here is the color change
-				backgroundColor: 'blue'
-			}
-			}}
-			textStyle={{
-			right: {
-				color: '#fff'
-			}
-			}}
-		/>
-				
-		);
-	}
-	
-	scrollToBottomComponent() {
-		return (
-			<View style={styles.bottomComponentContainer}>
-				<IconButton icon='chevron-double-down' size={36} color='#6646ee' />
-			</View>
-		);
-	}
+			firebaseRD.uploadImageChat(pickerResult.uri, this.user.salaKey)
+				.then(resp => {
+					console.log(`Sucesso: ${resp}`);
+					if (this._isMounted) {
+						const message = [];
+						message._id = firebaseRD.guidGenerator();
+                        message.createdAt = Date.now();
+                        message.user = this.user
+						message.image = resp;
+						message.text = '';
 
-   	renderSystemMessage(props) {
-		return (
-			<SystemMessage
-				{...props}
-				wrapperStyle={styles.systemMessageWrapper}
-				textStyle={styles.systemMessageText}
-			/>
-		);
-	}
+						let message_img = [
+							message
+						];
+
+						this.setState(prevState => ({
+							messages: [...prevState.messages, message_img]
+						}))
+						
+						firebaseRD.enviarMsg(message_img)
+					}
+
+				})
+				.catch(err => console.log(err));
+      		}
+		} catch (err) {
+			console.log('onImageUpload error:' + err.message);
+			alert('Upload image error:' + err.message);
+		}
+	};
 
 	componentDidMount() {
 		this._isMounted = true;
@@ -119,79 +101,67 @@ class Chat extends React.Component {
 	componentWillUnmount() {
 		this.setState({
 			messages: [],
-			image: ''
         });
 		firebaseRD.refOffMensagens(this.user.salaKey);
 	}
 	
-	onImageUploadChat = async () => {
-		const { status: cameraRollPerm } = await Permissions.askAsync(
-			Permissions.CAMERA_ROLL
-		);
-		try {
-		// only if user allows permission to camera roll
-			if (cameraRollPerm === 'granted') {
-				let pickerResult = await ImagePicker.launchImageLibraryAsync({
-					allowsEditing: true,
-					aspect: [4, 4],
-			});
-			var wantedMaxSize = 150;
-			var rawheight = pickerResult.height;
-			var rawwidth = pickerResult.width;
-			
-			var ratio = rawwidth / rawheight;
-			var wantedwidth = wantedMaxSize;
-			var wantedheight = wantedMaxSize/ratio;
-			// check vertical or horizontal
-			if(rawheight > rawwidth){
-				wantedwidth = wantedMaxSize*ratio;
-				wantedheight = wantedMaxSize;
-			}
-			
-			firebaseRD.uploadImageChat(pickerResult.uri, this.user.salaKey)
-				.then(resp => {
-					console.log(`Sucesso: ${resp}`);
-					if (this._isMounted) {
-						console.log('+++++++++++++++++');
-						// this.setState({image: resp });
-						const message = [];
-						// let message = [
-						// 	['_id', firebaseRD.guidGenerator()],
-						// 	['createdAt', Date.now()],
-						// 	['user', this.user],
-						// 	['image', resp],
-						// 	['text', 'teste']
-						// ];
-						
-						message._id = firebaseRD.guidGenerator();
-                        message.createdAt = Date.now();
-                        message.user = this.user
-						message.image = resp;
-						message.text = 'teste';
-
-						let message_img = [
-							message
-						];
-						this.setState(prevState => ({
-							messages: [...prevState.messages, message_img]
-						}))
-						// console.log(this.state.messages);
-						firebaseRD.enviarMsg(message_img)
-					}
-
-				})
-				.catch(err => console.log(err));
-      		}
-		} catch (err) {
-			console.log('onImageUpload error:' + err.message);
-			alert('Upload image error:' + err.message);
-		}
-	};
-
-	renderCustomView = (props) => {
+	renderLoading() {
 		return (
-			<View style={props.containerStyle}>
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size='large' color='#6646ee' />
 			</View>
+		);
+	}
+	
+	renderSend(props) {
+		return (
+			<Send {...props}>
+				<View style={styles.sendingContainer}>
+					<IconButton icon='send-circle' size={50} color='#263A44' />
+				</View>
+			</Send>
+		);
+	}
+
+	renderBubble(props) {
+		return (
+			<Bubble
+				{...props}
+				wrapperStyle={{
+					right: {
+						backgroundColor: '#88cbf0'
+					},
+					left: {
+						backgroundColor: '#263A44'
+					},
+				}}
+				textStyle={{
+					right: {
+						color: '#fff'
+					},
+					left: {
+						color: '#fff'
+					}
+				}}
+			/>
+		);
+	}
+	
+	scrollToBottomComponent() {
+		return (
+			<View style={styles.bottomComponentContainer}>
+				<IconButton icon='chevron-double-down' size={36} color='#263A44' />
+			</View>
+		);
+	}
+
+   	renderSystemMessage(props) {
+		return (
+			<SystemMessage
+				{...props}
+				wrapperStyle={styles.systemMessageWrapper}
+				textStyle={styles.systemMessageText}
+			/>
 		);
 	}
 	
@@ -199,57 +169,57 @@ class Chat extends React.Component {
 		if (props.currentMessage.image) {
 			return (
 				<View style={props.containerStyle}>
-					<Image source={{uri: props.currentMessage.image}} style={{width: 200, height:200, resizeMode : 'contain', margin: 5 }} />
+					{/* <Image source={{uri: props.currentMessage.image}} style={{width: 200, height:200, resizeMode : 'contain', margin: 10 }} /> */}
+
+					<ImageModal
+						resizeMode="contain"
+						imageBackgroundColor="#ffffff00"
+						style={{
+							width: 200,
+							height: 200,
+						}}
+						source={{
+							uri: props.currentMessage.image,
+						}}
+					/>
 				</View>
 			);
 		}
 		return null
 	}
 
+	
 	render() {
-		const rightButtonConfig = {
-			title: "Add photo",
-			handler: () => this.onImageUploadChat().then(resp => {//firebaseRD.enviarMsg(this.state.messages, this.state.image),
-				//  this.setState({ image: '' })
-				}),
-		};
 		return (
 			<View style={{ flex: 1 }}>
-				<NavigationBar title={{ title: "" }} rightButton={rightButtonConfig} />
+				<View style={styles.sendingContainer}>
+					<View style={{flexDirection:"row"}}>
+						<View style={{flex:1}}>
+							<IconButton icon='camera' size={32} color='#263A44' style={styles.options} onPress={this.onImageUploadChat} />
+						</View>
+					</View>
+				</View>
 				<GiftedChat
 					messages={this.state.messages}
 					// onSend={firebaseRD.enviarMsg()}
 					onSend={messages => firebaseRD.enviarMsg(messages, this.state.image)}
 					user={this.user}
 					renderSend={this.renderSend}
-					renderLoading={this.renderLoading}
-					renderUsernameOnMessage
-					renderCustomView={this.renderCustomView}
-					renderMessageImage={this.renderMessageImage}
-					
 					renderBubble={this.renderBubble}
+					renderLoading={this.renderLoading}
+					renderMessageImage={this.renderMessageImage}
+					scrollToBottomComponent={this.scrollToBottomComponent}
+					renderUsernameOnMessage
+					alwaysShowSend
 					placeholder="Escreva sua mensagem..."
 					showUserAvatar
 					isAnimated
 					showAvatarForEveryMessage
-					scrollToBottomComponent={this.scrollToBottomComponent}
-      				// renderSystemMessage={this.renderSystemMessage}
 					scrollToBottom
-					// renderBubble={(props) => {
-					// 	const color = props.currentMessage.read ? "#0084ff" : "#389bff";
-					// 	return (
-					// 		<Bubble
-					// 			{...props}
-					// 			wrapperStyle={{ right: { backgroundColor: color } }}
-					// 		/>
-					// 	);
-					// }}
 				/>
 			</View>
 		);
 	}
-
-	
 }
 
 export default Chat;

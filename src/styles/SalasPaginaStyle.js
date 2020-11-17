@@ -76,7 +76,7 @@ export default StyleSheet.create({
       top: -20,                  
       flexDirection:'row',   
       height:50,
-      backgroundColor:'red',
+      backgroundColor:'#263A44',
       borderRadius:100,
       zIndex:99,
     },
@@ -91,7 +91,7 @@ export default StyleSheet.create({
       bottom: 10,                                                    
       right: 10,
       height:60,
-      backgroundColor:'#005cc5',
+      backgroundColor:'#263A44',
       borderRadius:100,
       zIndex:999
     },

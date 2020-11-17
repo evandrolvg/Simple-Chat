@@ -24,7 +24,7 @@ const AppStack = createStackNavigator(
 									style={{
 										height: 60,
 										marginTop: 24,
-										backgroundColor:'#005cc5',
+										backgroundColor:'#263A44',
 										flexDirection: 'row',
 										alignItems:'center',
 										justifyContent:'center',
@@ -80,7 +80,7 @@ const AppStack = createStackNavigator(
 		defaultNavigationOptions: {
 			headerTintColor: "white",
 			headerStyle: {
-				backgroundColor: "#005cc5",
+				backgroundColor: "#263A44",
 			},
 			headerTitleStyle: {
 				color: "white",
@@ -121,7 +121,22 @@ const AuthStack = createStackNavigator(
 				},
 			}),
 		},
-	});
+	},
+	{
+		defaultNavigationOptions: {
+			headerTintColor: "white",
+			headerStyle: {
+				backgroundColor: "#263A44",
+			},
+			headerTitleStyle: {
+				color: "white",
+				fontSize: 20,
+				flexGrow: 1,
+				textAlign: "center",
+			},
+		},
+	}
+	);
 
 export default createAppContainer(
   createSwitchNavigator(

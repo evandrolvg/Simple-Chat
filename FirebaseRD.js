@@ -306,7 +306,7 @@ class FirebaseRD {
 
 	enviarMsg = (messages, img) => {
 		// console.log('------------------------------------------');
-		console.log(messages);
+		// console.log(messages);
 		for (let i = 0; i < messages.length; i++) {
 			const { text, user, image } = messages[i];
 			if (image == undefined) {

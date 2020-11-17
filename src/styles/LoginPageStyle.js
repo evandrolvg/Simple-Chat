@@ -36,7 +36,7 @@ export default StyleSheet.create({
 		paddingLeft: 16,
 	},
 	button: {
-		backgroundColor: "#005cc5",
+		backgroundColor: "#263A44",
 		marginLeft: 30,
 		marginRight: 30,
 		marginTop: 20,
@@ -59,11 +59,11 @@ export default StyleSheet.create({
 	footerTextEsqueci: {
 		paddingBottom: 10,
 		fontSize: 16,
-		color: "blue",
+		color: "#2b4cc1",
 	},
 	footerText: {
 		paddingBottom: 10,
 		fontSize: 16,
-		color: "#2e2e2d",
+		color: "#263A44",
 	},
 });
