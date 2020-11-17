@@ -21,6 +21,13 @@ class FirebaseRD {
 		}
 	}
 	
+	guidGenerator() {
+		var S4 = function() {
+		   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+		};
+		return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
+	}
+
 	// ------------- LOGIN -------------
 	login = async (user, success_callback, failed_callback) => {
 		const output = await firebase
@@ -270,7 +277,7 @@ class FirebaseRD {
 
 	parseMensagens = (snapshot) => {
 		// console.log(snapshot.val());
-		const { createdAt, text, user } = snapshot.val();
+		const { createdAt, text, user, image } = snapshot.val();
 		const { key: id } = snapshot;
 		const { key: _id } = snapshot; //needed for giftedchat
 		
@@ -281,6 +288,7 @@ class FirebaseRD {
 			createdAt,
 			text,
 			user,
+			image
 		};
 		// console.log("MENSAGEM: " + message);
 		return message;
@@ -296,16 +304,23 @@ class FirebaseRD {
 		return firebase.database.ServerValue.TIMESTAMP;
 	}
 
-	enviarMsg = (messages) => {
+	enviarMsg = (messages, img) => {
+		// console.log('------------------------------------------');
+		console.log(messages);
 		for (let i = 0; i < messages.length; i++) {
-			const { text, user, salaKey } = messages[i];
+			const { text, user, image } = messages[i];
+			if (image == undefined) {
+				image = '';
+			}
 			const message = {
 				text,
 				user,
+				image,
 				// createdAt: new Date()
+				
 				createdAt: this.timestamp,
 			};
-			
+			// console.log(message);
 			firebase.database().ref(`Messages/${user.salaKey}`).push(message);
 		}
 	};
@@ -313,6 +328,38 @@ class FirebaseRD {
 	refOffMensagens(sala) {
 		this.refMensagens(sala).off();
 	}
+
+	uploadImageChat = async (uri, sala) => {
+		// console.log("Imagem upload. URI:" + uri);
+		console.log(sala +'_'+ this.guidGenerator());
+		try {
+			const response = await fetch(uri);
+			const blob = await response.blob();
+			const ref = firebase.storage().ref("chat").child(sala +'_'+ this.guidGenerator());
+			const task = ref.put(blob);
+
+			return new Promise((resolve, reject) => {
+				task.on(
+					"state_changed",
+					() => {
+						/* noop but you can track the progress here */
+					},
+					reject /* this is where you would put an error callback! */,
+					() => 
+					{
+						ref.getDownloadURL()
+							.then(url => {
+								// console.log('[completed. Dowload URL]' + url);
+								resolve(url);
+							}); 
+					}
+					// resolve(task.snapshot.getDownloadURL)
+				);
+			});
+		} catch (err) {
+			console.log("UPLOAD IMAGE ERROR: " + err.message); //Cannot load an empty url
+		}
+	};
 	// ------------- FIM MENSAGENS -------------
 	
 }

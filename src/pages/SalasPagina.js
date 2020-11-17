@@ -28,7 +28,7 @@ class SalasPagina extends React.Component {
       name: this.props.navigation.state.params.name,
       email: this.props.navigation.state.params.email,
       avatar: this.props.navigation.state.params.avatar,
-      image: this.props.navigation.state.params.email,
+      // image: this.props.navigation.state.params.email,
       salas: this.iniData,
       modalVisivel: false,
       inputTextSalaNome: '',
