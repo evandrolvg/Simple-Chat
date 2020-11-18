@@ -1,6 +1,11 @@
 import React from "react";
-import { GiftedChat, Send, Bubble, Actions,
-	ActionsProps  } from "react-native-gifted-chat"; // 0.3.0
+import { 
+		GiftedChat,
+		Send, 
+		Bubble,
+		Actions,
+		ActionsProps  
+} from "react-native-gifted-chat";
 import {
 	View,
 	Text,
@@ -125,6 +130,7 @@ class Chat extends React.Component {
 
 	renderBubble(props) {
 		return (
+
 			<Bubble
 				{...props}
 				wrapperStyle={{
@@ -170,7 +176,6 @@ class Chat extends React.Component {
 			return (
 				<View style={props.containerStyle}>
 					{/* <Image source={{uri: props.currentMessage.image}} style={{width: 200, height:200, resizeMode : 'contain', margin: 10 }} /> */}
-
 					<ImageModal
 						resizeMode="contain"
 						imageBackgroundColor="#ffffff00"
@@ -187,7 +192,6 @@ class Chat extends React.Component {
 		}
 		return null
 	}
-
 	
 	render() {
 		return (

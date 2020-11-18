@@ -25,7 +25,7 @@ class PerfilPagina extends React.Component {
 		this.nomeTextInputRef = React.createRef();
 
 		this.state = {
-			// user: this.props.navigation.state.params.user,
+			user: this.props.navigation.state.params.user,
 			avatar: this.props.navigation.state.params.user.avatar
 
 		};
@@ -123,7 +123,7 @@ class PerfilPagina extends React.Component {
 								<Image style={styles.logo} source={{uri: this.state.avatar}} />
 							)}
 							{typeof this.state.avatar == 'undefined' || this.state.avatar == null && (
-								<Image style={styles.logo} source={require("../img/chat.png")} />
+								<Image style={styles.logo} source={require("../img/avatar.png")} />
 							)}
 
 							<Text style={styles.footerText}>

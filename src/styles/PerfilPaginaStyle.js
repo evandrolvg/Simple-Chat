@@ -17,7 +17,7 @@ export default StyleSheet.create({
 		width: 200,
 		height: 200,
 		resizeMode: "contain",
-		borderRadius: 100,
+		borderRadius: 999,
 	},
 	logoView: {
 		marginTop: 10,
@@ -37,7 +37,7 @@ export default StyleSheet.create({
 		paddingLeft: 16,
 	},
 	button: {
-		backgroundColor: "#005cc5",
+		backgroundColor: "#263A44",
 		marginLeft: 30,
 		marginRight: 30,
 		marginTop: 20,

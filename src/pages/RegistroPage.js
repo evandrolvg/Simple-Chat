@@ -23,14 +23,10 @@ class Registro extends React.Component {
 
 		this.state = {
 			loading: true,
-			// name: "",
-			// email: "",
-			// password: "",
+			name: "",
+			email: "",
+			password: "",
 			avatar: "",
-			
-			name: "Teste",
-			email: "teste@teste.com.br",
-			password: "123456",
 		}
 	} 
 

@@ -20,17 +20,17 @@ class EsqueciSenha extends React.Component {
   
 	esqueciSenha = async () => {
 		if (this.state.email != '') {
-		try {
-			await firebaseRD.esqueciSenha(this.state.email);
-		} catch ({ message }) {
-			console.log("ERROR:" + message);
-		}
+			try {
+				await firebaseRD.esqueciSenha(this.state.email);
+			} catch ({ message }) {
+				console.log("ERROR:" + message);
+			}
 		}else{
-		ToastAndroid.showWithGravity(
-			"Informe um e-mail válido",
-			ToastAndroid.SHORT,
-			ToastAndroid.BOTTOM
-		);
+			ToastAndroid.showWithGravity(
+				"Informe um e-mail válido",
+				ToastAndroid.SHORT,
+				ToastAndroid.BOTTOM
+			);
 		}
 	};
 
