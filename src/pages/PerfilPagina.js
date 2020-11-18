@@ -27,8 +27,8 @@ class PerfilPagina extends React.Component {
 		this.state = {
 			user: this.props.navigation.state.params.user,
 			avatar: this.props.navigation.state.params.user.avatar
-
 		};
+
 	}
 
 	editaUsuario = async () => {
@@ -103,7 +103,7 @@ class PerfilPagina extends React.Component {
 		var userf = firebase.auth().currentUser;
 						
 		if (this._isMounted) {
-			this.setState({ name: userf.displayName, avatar:userf.photoURL });
+			this.setState({ name: userf.displayName, avatar: userf.photoURL, email: userf.email });
 		}
 		console.log(this.state.avatar);
 	}
@@ -147,7 +147,7 @@ class PerfilPagina extends React.Component {
 							/>
 
 							<View style={styles.footerView}>
-								<Text style={styles.link} onPress={() => this.props.navigation.navigate("AlterarSenha", { alterar_senha: this.state.user.email })} >
+								<Text style={styles.link} onPress={() => this.props.navigation.navigate("AlterarSenha", { alterar_senha: this.state.email })} >
 									Alterar senha
 								</Text>
 							</View>

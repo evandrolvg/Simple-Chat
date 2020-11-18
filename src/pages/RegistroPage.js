@@ -15,6 +15,8 @@ import firebaseRD from "../../FirebaseRD";
 import Loader from "../components/Loading";
 
 class Registro extends React.Component {
+	_isMounted = false;
+
 	constructor(props) {
 		super(props);
 		this.nomeTextInputRef = React.createRef();
@@ -31,19 +33,21 @@ class Registro extends React.Component {
 	} 
 
 	registrar = async () => {
-		this.setState({ loading: true })
-		try {
-			const user = {
-				name: this.state.name,
-				email: this.state.email,
-				password: this.state.password,
-				avatar: this.state.avatar,
-			};
-			await firebaseRD.registro(user);
-			setTimeout(() => {this.setState({ loading: false })}, 5000)
-		} catch ({ message }) {
-			this.setState({ loading: false })
-			console.log("ERROR:" + message);
+		if (this._isMounted) {
+			this.setState({ loading: true })
+			try {
+				const user = {
+					name: this.state.name,
+					email: this.state.email,
+					password: this.state.password,
+					avatar: this.state.avatar,
+				};
+				await firebaseRD.registro(user);
+				setTimeout(() => {this.setState({ loading: false })}, 5000)
+			} catch ({ message }) {
+				this.setState({ loading: false })
+				console.log("ERROR:" + message);
+			}
 		}
 	};
 
@@ -52,8 +56,13 @@ class Registro extends React.Component {
 	onChangeTextName = (name) => this.setState({ name });
 
 	componentDidMount() {
+		this._isMounted = true;
 		this.setState({ loading: false })
 	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
+  	}
 
 	render() {
 		return (

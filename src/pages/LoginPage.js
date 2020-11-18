@@ -26,14 +26,14 @@ class Login extends React.Component {
 
 		this.state = {
 			loading: true,
-			name: "",
-			email: "evandrolvg@gmail.com",
-			password: "123456",
-			avatar: "",
 			// name: "",
-			// email: "",
-			// password: "",
+			// email: "evandrolvg@gmail.com",
+			// password: "123456",
 			// avatar: "",
+			name: "",
+			email: "",
+			password: "",
+			avatar: "",
 		}
 	}
 

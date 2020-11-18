@@ -3,8 +3,7 @@ import {
 		GiftedChat,
 		Send, 
 		Bubble,
-		Actions,
-		ActionsProps  
+		MessageText
 } from "react-native-gifted-chat";
 import {
 	View,
@@ -65,24 +64,31 @@ class Chat extends React.Component {
 
 			firebaseRD.uploadImageChat(pickerResult.uri, this.user.salaKey)
 				.then(resp => {
-					console.log(`Sucesso: ${resp}`);
 					if (this._isMounted) {
-						const message = [];
-						message._id = firebaseRD.guidGenerator();
-                        message.createdAt = Date.now();
-                        message.user = this.user
-						message.image = resp;
-						message.text = '';
+						if (typeof resp != undefined && resp != undefined) {
+							console.log(`Imagem: ${resp}`);
+							
+							const message = [];
+							message._id = firebaseRD.guidGenerator();
+							message.createdAt = Date.now();
+							message.user = this.user
+							message.image = resp;
+							message.text = '';
 
-						let message_img = [
-							message
-						];
+							let message_img = [
+								message
+							];
 
-						this.setState(prevState => ({
-							messages: [...prevState.messages, message_img]
-						}))
-						
-						firebaseRD.enviarMsg(message_img)
+							// this.setState(prevState => ({
+							// 	messages: [...prevState.messages, message_img]
+							// }))
+
+							// this.setState((previousState) => ({
+							// 	messages: GiftedChat.append(previousState.messages, message_img),
+							// }))
+							
+							firebaseRD.enviarMsg(message_img)
+						}
 					}
 
 				})
@@ -192,6 +198,22 @@ class Chat extends React.Component {
 		}
 		return null
 	}
+
+	renderMessageText = (props) => (
+		<MessageText
+			{...props}
+			
+			textStyle={{
+				left: { color: '#fff' },
+				right: { color: '#fff' },
+			}}
+			linkStyle={{
+				left: { color: '#B7DEFF' },
+				right: { color: 'blue' },
+			}}
+			// customTextStyle={{ fontSize: 24, lineHeight: 24 }}
+		/>
+	  );
 	
 	render() {
 		return (
@@ -211,8 +233,10 @@ class Chat extends React.Component {
 					renderSend={this.renderSend}
 					renderBubble={this.renderBubble}
 					renderLoading={this.renderLoading}
+					renderMessageText ={this.renderMessageText}
 					renderMessageImage={this.renderMessageImage}
 					scrollToBottomComponent={this.scrollToBottomComponent}
+					timeFormat={'H:M'}
 					renderUsernameOnMessage
 					alwaysShowSend
 					placeholder="Escreva sua mensagem..."

@@ -79,11 +79,16 @@ class SalasPagina extends React.Component {
   }
 
   menuVisivel = (bool) => {
-    this.setState({ menuVisivel: bool })
+    if (this._isMounted) {
+      this.setState({ menuVisivel: bool })
+    }
   }
   
   listenSalas(refSalas) {
-    this.setState({ loading: true })
+    if (this._isMounted) {
+      this.setState({ loading: true })
+    }
+
     refSalas.on("value", dataSnapshot => {
       var salas = [];
       dataSnapshot.forEach(child => {
@@ -126,11 +131,7 @@ class SalasPagina extends React.Component {
 	    );	
   };
   
-  componentDidUpdate() {
-    // console.log('update');
-  }
-
-  componentDidMount() {
+   componentDidMount() {
     this._isMounted = true;
     
     var userf = firebase.auth().currentUser;
