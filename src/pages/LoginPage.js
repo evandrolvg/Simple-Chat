@@ -8,7 +8,9 @@ import {
 	KeyboardAvoidingView,
 	Image,
 	ToastAndroid,
-	Alert
+	Alert,
+	ImageBackground,
+	StatusBar
 } from "react-native";
 
 import styles from "../styles/LoginPageStyle";
@@ -107,9 +109,12 @@ class Login extends React.Component {
 
 	render() {
 		return (
+			
 			<View style={styles.container}>
+				<StatusBar hidden={true} />
 				<KeyboardAvoidingView keyboardVerticalOffset = {-500} behavior="padding" enabled style={{ flex: 1 }}>
-					<ScrollView style={styles.container}>
+					<ImageBackground source={require("../img/background.jpg")} style={styles.imageBack}>
+						<ScrollView style={styles.container}>
 						<Loader
           					loading={this.state.loading} />
 						<View style={styles.logoView}>
@@ -161,6 +166,7 @@ class Login extends React.Component {
 							</View>
 						</View>
 					</ScrollView>
+					</ImageBackground>
 				</KeyboardAvoidingView>
 			</View>
 		);

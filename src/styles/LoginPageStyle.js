@@ -3,7 +3,12 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#88cbf0",
+		// backgroundColor: "#88cbf0",
+	},
+	imageBack:{
+		flex: 1,
+		resizeMode: "cover",
+		justifyContent: "center"
 	},
 	mt: {
 		marginTop: 40,

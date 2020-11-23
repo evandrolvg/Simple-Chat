@@ -23,7 +23,7 @@ const AppStack = createStackNavigator(
 				header: () =>	<View
 									style={{
 										height: 60,
-										marginTop: 24,
+										// marginTop: 24,
 										backgroundColor:'#263A44',
 										flexDirection: 'row',
 										alignItems:'center',
