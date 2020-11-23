@@ -2,9 +2,8 @@
     <img src="screenshots/chatTab.png" width="100%" title="icon">
 </p>
 
-<p align="center">
-    ![Screenshot](screenshots/screens01.png)
-</p>
+
+![Screenshot](screenshots/screens01.png)
 
 ## Descrição
 O app Simple Chat tem como objetivo possibilitar conversas em salas de bate papo. Conta com as seguintes funcionalidades:
@@ -20,7 +19,6 @@ expo start
 ```
 
 ## Tecnologias
-- [I'm an inline-style link](https://www.google.com)
 - [Expo](https://expo.io/)
 - [React](https://pt-br.reactjs.org/)
 - [React Native](https://reactnative.dev/)
