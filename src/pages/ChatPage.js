@@ -7,14 +7,7 @@ import {
 } from "react-native-gifted-chat";
 import {
 	View,
-	Text,
-	PermissionsAndroid,
-	Dimensions,
-	ActivityIndicator,
-	Alert,
-	KeyboardAvoidingView,
-	Icon,
-	Image
+	ActivityIndicator
 } from "react-native";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
@@ -24,7 +17,6 @@ import ImageModal from 'react-native-image-modal';
 import { IconButton } from "react-native-paper";
 import firebase from "firebase";
 import firebaseRD from "../../FirebaseRD";
-import { Col, Row, Grid } from "react-native-easy-grid";
 import time from "../../Timer";
 
 class Chat extends React.Component {

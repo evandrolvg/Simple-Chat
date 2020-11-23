@@ -7,7 +7,6 @@ import {
 	View,
 	KeyboardAvoidingView,
 	Image,
-	ToastAndroid,
 	Alert,
 	ImageBackground,
 	StatusBar

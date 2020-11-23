@@ -1,6 +1,4 @@
 import firebase from "firebase";
-import { auth, initializeApp, storage } from 'firebase';
-import uuid from "uuid";
 import { ToastAndroid } from "react-native";
 
 const config = {

@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
 	Text,
 	TextInput,
@@ -8,7 +7,6 @@ import {
 	View,
 	KeyboardAvoidingView,
 	Image,
-	
 } from "react-native";
 import styles from "../styles/RegistroPageStyle";
 import firebaseRD from "../../FirebaseRD";

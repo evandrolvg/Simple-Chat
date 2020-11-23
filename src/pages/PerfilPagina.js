@@ -1,7 +1,7 @@
 import React from "react";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
-import ImageEditor from "@react-native-community/image-editor";
+
 import {
 	Text,
 	TextInput,
